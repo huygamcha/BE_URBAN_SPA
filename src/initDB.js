@@ -9,7 +9,7 @@ const initializeDB = async () => {
   try {
     // Kết nối đến cơ sở dữ liệu
     await mongoose
-      .connect(`${process.env.MONGO_DB}`, {
+      .connect(`${process.env.MONGO_DB}spa`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       })
