@@ -35,10 +35,11 @@ app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-routes(app);
+// routes(app);
+app.use("/api/v1.0", routes);
 
 mongoose
-  .connect(`${process.env.MONGO_DB}spa`)
+  .connect(`${process.env.MONGO_DB}urbanSpa`)
   .then(() => {
     // console.log("Connect Db success!");
   })

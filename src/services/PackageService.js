@@ -1,36 +1,49 @@
 const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const Appointment = require("../models/AppointmentModel");
+const Package = require("../models/PackageModel");
 
-const createAppointment = (newAppointment) => {
+const createPackage = (newPackage) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, packageId, appointmentDate, phoneNumber } =
-      newAppointment;
+    const {
+      name,
+      nameKo,
+      nameEn,
+      nameJp,
+      description,
+      descriptionKo,
+      descriptionEn,
+      descriptionJp,
+      image,
+    } = newPackage;
     try {
-      const checkAppointment = await Appointment.findOne({
+      const checkPackage = await Package.findOne({
         name: name,
       });
-      if (checkAppointment !== null) {
+      if (checkPackage !== null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
-          message: "The name of appointment is existed",
+          message: "The name of Package is existed",
           typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
           data: null,
           statusMessage: "Error",
         });
       }
-      const createAppointment = await Appointment.create({
+      const createPackage = await Package.create({
         name,
-        email,
-        packageId,
-        appointmentDate,
-        phoneNumber,
+        nameKo,
+        nameEn,
+        nameJp,
+        description,
+        descriptionKo,
+        descriptionEn,
+        descriptionJp,
+        image,
       });
-      if (createAppointment) {
+      if (createPackage) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-          message: "Created appointment success",
+          message: "Created Package success",
           typeError: "",
-          data: createAppointment,
+          data: createPackage,
           statusMessage: "Success",
         });
       }
@@ -40,15 +53,17 @@ const createAppointment = (newAppointment) => {
   });
 };
 
-const updateAppointment = (id, data) => {
+const updatePackage = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkAppointment = await Appointment.findOne({ _id: id });
+      const checkPackage = await Package.findOne({
+        _id: id,
+      });
 
-      if (!checkAppointment) {
+      if (!checkPackage) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "Appointment not found",
+          message: "The Package is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
@@ -56,14 +71,32 @@ const updateAppointment = (id, data) => {
         return;
       }
 
-      const updatedAppointment = await Appointment.findByIdAndUpdate(id, data, {
+      if (data.name && data.name !== checkPackage.name) {
+        const existedName = await Package.findOne({
+          name: data.name,
+          _id: { $ne: id },
+        });
+
+        if (existedName !== null) {
+          resolve({
+            status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
+            message: "The name of Package is existed",
+            typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
+            data: null,
+            statusMessage: "Error",
+          });
+          return;
+        }
+      }
+
+      const updatedPackage = await Package.findByIdAndUpdate(id, data, {
         new: true,
       });
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Appointment updated successfully",
+        message: "Updated Package type success",
         typeError: "",
-        data: updatedAppointment,
+        data: updatedPackage,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -72,28 +105,28 @@ const updateAppointment = (id, data) => {
   });
 };
 
-const deleteAppointment = (id) => {
+const deletePackage = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkAppointment = await Appointment.findOne({ _id: id });
-
-      if (!checkAppointment) {
+      const checkPackage = await Package.findOne({
+        _id: id,
+      });
+      if (checkPackage === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "Appointment not found",
+          message: "The Package name is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
         });
-        return;
       }
 
-      await Appointment.findByIdAndDelete(id);
+      await Package.findByIdAndDelete(id);
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Appointment deleted successfully",
+        message: "Deleted Package success",
         typeError: "",
-        data: checkAppointment,
+        data: checkPackage,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -102,29 +135,43 @@ const deleteAppointment = (id) => {
   });
 };
 
-const getDetailsAppointment = (id) => {
+const deleteManyCities = (ids) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const appointment = await Appointment.findOne({ _id: id }).populate(
-        "packageId"
-      );
+      await Package.deleteMany({ _id: ids });
+      resolve({
+        status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
+        message: "Delete packages success",
+        typeError: "",
+        data: null,
+        statusMessage: "Success",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
-      if (!appointment) {
+const getDetailsPackage = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkPackage = await Package.findOne({
+        _id: id,
+      });
+      if (checkPackage === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "Appointment not found",
+          message: "The Package is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
         });
-        return;
       }
-
       resolve({
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
-        message: "Appointment details fetched successfully",
+        message: "Success",
         typeError: "",
-        data: appointment,
+        data: checkPackage,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -133,35 +180,24 @@ const getDetailsAppointment = (id) => {
   });
 };
 
-const getAllAppointments = (params) => {
+const getAllPackage = (params) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const limit = params?.limit ? +params.limit : 10;
+      const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
       const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
-
       if (search) {
         const searchRegex = { $regex: search, $options: "i" };
-        query.$or = [
-          { customerName: searchRegex },
-          { customerEmail: searchRegex },
-        ];
+
+        query.$or = [{ name: searchRegex }];
       }
 
-      const fieldsToSelect = {
-        name: 1,
-        email: 1,
-        packageId: 1,
-        appointmentDate: 1,
-        phoneNumber: 1,
-        totalPrice: 1,
-        note: 1,
-        status: 1,
-      };
-      const totalCount = await Appointment.countDocuments(query);
+      const totalCount = await Package.countDocuments(query);
+
       const totalPage = Math.ceil(totalCount / limit);
+
       const startIndex = (page - 1) * limit;
 
       let sortOptions = {};
@@ -174,8 +210,20 @@ const getAllAppointments = (params) => {
         });
       }
 
+      const fieldsToSelect = {
+        name: 1,
+        nameKo: 1,
+        nameEn: 1,
+        nameJp: 1,
+        description: 1,
+        descriptionKo: 1,
+        descriptionEn: 1,
+        descriptionJp: 1,
+        image: 1,
+      };
+
       if (page === -1 && limit === -1) {
-        const allAppointment = await Appointment.find(query)
+        const allPackage = await Package.find(query)
           .sort(sortOptions)
           .select(fieldsToSelect);
         resolve({
@@ -184,7 +232,7 @@ const getAllAppointments = (params) => {
           typeError: "",
           statusMessage: "Success",
           data: {
-            appointments: allAppointment,
+            packages: allPackage,
             totalPage: 1,
             totalCount: totalCount,
           },
@@ -192,7 +240,7 @@ const getAllAppointments = (params) => {
         return;
       }
 
-      const allAppointment = await Appointment.find(query)
+      const allPackage = await Package.find(query)
         .skip(startIndex)
         .limit(limit)
         .sort(sortOptions)
@@ -203,7 +251,7 @@ const getAllAppointments = (params) => {
         typeError: "",
         statusMessage: "Success",
         data: {
-          appointments: allAppointment,
+          packages: allPackage,
           totalPage: totalPage,
           totalCount: totalCount,
         },
@@ -214,27 +262,11 @@ const getAllAppointments = (params) => {
   });
 };
 
-const deleteManyAppointments = (ids) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await Appointment.deleteMany({ _id: ids });
-      resolve({
-        status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Delete appointments success",
-        typeError: "",
-        data: null,
-        statusMessage: "Success",
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
 module.exports = {
-  createAppointment,
-  updateAppointment,
-  deleteAppointment,
-  getDetailsAppointment,
-  getAllAppointments,
-  deleteManyAppointments,
+  createPackage,
+  updatePackage,
+  getDetailsPackage,
+  deletePackage,
+  getAllPackage,
+  deleteManyCities,
 };

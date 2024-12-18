@@ -1,3 +1,6 @@
+const express = require("express");
+const routes = express.Router();
+
 const UserRouter = require("./UserRouter");
 const AuthRouter = require("./AuthRouter");
 const ProductRouter = require("./ProductRouter");
@@ -14,22 +17,26 @@ const NotificationRouter = require("./NotificationRouter");
 const CommentRouter = require("./CommentRouter");
 const AppointmentRouter = require("./AppointmentRouter");
 
-const routes = (app) => {
-  app.use("/api/auth", AuthRouter);
-  app.use("/api/users", UserRouter);
-  app.use("/api/products", ProductRouter);
-  app.use("/api/product-types", ProductTypeRouter);
-  app.use("/api/orders", OrderRouter);
-  app.use("/api/payment", PaymentRouter);
-  app.use("/api/reviews", ReviewRouter);
-  app.use("/api/roles", RoleRouter);
-  app.use("/api/city", CityRouter);
-  app.use("/api/delivery-type", DeliveryTypeRouter);
-  app.use("/api/payment-type", PaymentTypeRouter);
-  app.use("/api/report", ReportRouter);
-  app.use("/api/notifications", NotificationRouter);
-  app.use("/api/comments", CommentRouter);
-  app.use("/api/appointments", AppointmentRouter)
-};
+const PackageRouter = require("./PackageRouter");
+const ServiceRouter = require("./ServiceRouter");
+
+routes.use("/auth", AuthRouter);
+routes.use("/users", UserRouter);
+routes.use("/products", ProductRouter);
+routes.use("/product-types", ProductTypeRouter);
+routes.use("/orders", OrderRouter);
+routes.use("/payment", PaymentRouter);
+routes.use("/reviews", ReviewRouter);
+routes.use("/roles", RoleRouter);
+routes.use("/city", CityRouter);
+routes.use("/delivery-type", DeliveryTypeRouter);
+routes.use("/payment-type", PaymentTypeRouter);
+routes.use("/report", ReportRouter);
+routes.use("/notifications", NotificationRouter);
+routes.use("/comments", CommentRouter);
+
+routes.use("/appointments", AppointmentRouter);
+routes.use("/packages", PackageRouter);
+routes.use("/services", ServiceRouter);
 
 module.exports = routes;

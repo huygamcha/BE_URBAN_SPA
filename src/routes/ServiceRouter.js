@@ -18,14 +18,14 @@ router.put(
 
 router.get(
   "/:id",
-  AuthPermission(CONFIG_PERMISSIONS.SERVICE.VIEW),
-  ServiceController.getServiceDetails
+  // AuthPermission(CONFIG_PERMISSIONS.SERVICE.VIEW),
+  ServiceController.getDetailService
 );
 
 router.get(
   "/",
-  AuthPermission(CONFIG_PERMISSIONS.SERVICE.VIEW),
-  ServiceController.getAllServices
+  // AuthPermission(CONFIG_PERMISSIONS.SERVICE.VIEW),
+  ServiceController.getAllService
 );
 
 router.delete(

@@ -1,36 +1,36 @@
 const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const Appointment = require("../models/AppointmentModel");
+const Service = require("../models/ServiceModel");
 
-const createAppointment = (newAppointment) => {
+const createService = (newService) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, packageId, appointmentDate, phoneNumber } =
-      newAppointment;
+    const { name, nameKo, nameJp, nameEn, packageId, options } = newService;
     try {
-      const checkAppointment = await Appointment.findOne({
+      const checkService = await Service.findOne({
         name: name,
       });
-      if (checkAppointment !== null) {
+      if (checkService !== null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
-          message: "The name of appointment is existed",
+          message: "The name of service is existed",
           typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
           data: null,
           statusMessage: "Error",
         });
       }
-      const createAppointment = await Appointment.create({
+      const createService = await Service.create({
         name,
-        email,
+        nameKo,
+        nameJp,
+        nameEn,
         packageId,
-        appointmentDate,
-        phoneNumber,
+        options,
       });
-      if (createAppointment) {
+      if (createService) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-          message: "Created appointment success",
+          message: "Created service success",
           typeError: "",
-          data: createAppointment,
+          data: createService,
           statusMessage: "Success",
         });
       }
@@ -40,15 +40,17 @@ const createAppointment = (newAppointment) => {
   });
 };
 
-const updateAppointment = (id, data) => {
+const updateService = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkAppointment = await Appointment.findOne({ _id: id });
+      const checkService = await Service.findOne({
+        _id: id,
+      });
 
-      if (!checkAppointment) {
+      if (!checkService) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "Appointment not found",
+          message: "The service is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
@@ -56,14 +58,32 @@ const updateAppointment = (id, data) => {
         return;
       }
 
-      const updatedAppointment = await Appointment.findByIdAndUpdate(id, data, {
+      if (data.name && data.name !== checkService.name) {
+        const existedName = await Service.findOne({
+          name: data.name,
+          _id: { $ne: id },
+        });
+
+        if (existedName !== null) {
+          resolve({
+            status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
+            message: "The name of service is existed",
+            typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
+            data: null,
+            statusMessage: "Error",
+          });
+          return;
+        }
+      }
+
+      const updatedService = await Service.findByIdAndUpdate(id, data, {
         new: true,
       });
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Appointment updated successfully",
+        message: "Updated service type success",
         typeError: "",
-        data: updatedAppointment,
+        data: updatedService,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -72,28 +92,28 @@ const updateAppointment = (id, data) => {
   });
 };
 
-const deleteAppointment = (id) => {
+const deleteService = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkAppointment = await Appointment.findOne({ _id: id });
-
-      if (!checkAppointment) {
+      const checkService = await Service.findOne({
+        _id: id,
+      });
+      if (checkService === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "Appointment not found",
+          message: "The service name is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
         });
-        return;
       }
 
-      await Appointment.findByIdAndDelete(id);
+      await Service.findByIdAndDelete(id);
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Appointment deleted successfully",
+        message: "Deleted service success",
         typeError: "",
-        data: checkAppointment,
+        data: checkService,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -102,29 +122,43 @@ const deleteAppointment = (id) => {
   });
 };
 
-const getDetailsAppointment = (id) => {
+const deleteManyServices = (ids) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const appointment = await Appointment.findOne({ _id: id }).populate(
-        "packageId"
-      );
+      await Service.deleteMany({ _id: ids });
+      resolve({
+        status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
+        message: "Delete services success",
+        typeError: "",
+        data: null,
+        statusMessage: "Success",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
-      if (!appointment) {
+const getDetailService = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkService = await Service.findOne({
+        _id: id,
+      });
+      if (checkService === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "Appointment not found",
+          message: "The service is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
         });
-        return;
       }
-
       resolve({
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
-        message: "Appointment details fetched successfully",
+        message: "Success",
         typeError: "",
-        data: appointment,
+        data: checkService,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -133,35 +167,24 @@ const getDetailsAppointment = (id) => {
   });
 };
 
-const getAllAppointments = (params) => {
+const getAllService = (params) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const limit = params?.limit ? +params.limit : 10;
+      const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
       const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
-
       if (search) {
         const searchRegex = { $regex: search, $options: "i" };
-        query.$or = [
-          { customerName: searchRegex },
-          { customerEmail: searchRegex },
-        ];
+
+        query.$or = [{ name: searchRegex }];
       }
 
-      const fieldsToSelect = {
-        name: 1,
-        email: 1,
-        packageId: 1,
-        appointmentDate: 1,
-        phoneNumber: 1,
-        totalPrice: 1,
-        note: 1,
-        status: 1,
-      };
-      const totalCount = await Appointment.countDocuments(query);
+      const totalCount = await Service.countDocuments(query);
+
       const totalPage = Math.ceil(totalCount / limit);
+
       const startIndex = (page - 1) * limit;
 
       let sortOptions = {};
@@ -174,8 +197,17 @@ const getAllAppointments = (params) => {
         });
       }
 
+      const fieldsToSelect = {
+        name: 1,
+        nameKo: 1,
+        nameJp: 1,
+        nameKr: 1,
+        packageId: 1,
+        options: 1,
+      };
+
       if (page === -1 && limit === -1) {
-        const allAppointment = await Appointment.find(query)
+        const allService = await Service.find(query)
           .sort(sortOptions)
           .select(fieldsToSelect);
         resolve({
@@ -184,7 +216,7 @@ const getAllAppointments = (params) => {
           typeError: "",
           statusMessage: "Success",
           data: {
-            appointments: allAppointment,
+            services: allService,
             totalPage: 1,
             totalCount: totalCount,
           },
@@ -192,7 +224,7 @@ const getAllAppointments = (params) => {
         return;
       }
 
-      const allAppointment = await Appointment.find(query)
+      const allService = await Service.find(query)
         .skip(startIndex)
         .limit(limit)
         .sort(sortOptions)
@@ -203,7 +235,7 @@ const getAllAppointments = (params) => {
         typeError: "",
         statusMessage: "Success",
         data: {
-          appointments: allAppointment,
+          services: allService,
           totalPage: totalPage,
           totalCount: totalCount,
         },
@@ -214,27 +246,11 @@ const getAllAppointments = (params) => {
   });
 };
 
-const deleteManyAppointments = (ids) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await Appointment.deleteMany({ _id: ids });
-      resolve({
-        status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Delete appointments success",
-        typeError: "",
-        data: null,
-        statusMessage: "Success",
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
 module.exports = {
-  createAppointment,
-  updateAppointment,
-  deleteAppointment,
-  getDetailsAppointment,
-  getAllAppointments,
-  deleteManyAppointments,
+  createService,
+  updateService,
+  getDetailService,
+  deleteService,
+  getAllService,
+  deleteManyServices,
 };

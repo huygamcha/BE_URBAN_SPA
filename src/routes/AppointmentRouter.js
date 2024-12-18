@@ -6,7 +6,7 @@ const AppointmentController = require("../controllers/AppointmentController");
 
 router.post(
   "/",
-  // AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.CREATE),
+  AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.CREATE),
   AppointmentController.createAppointment
 );
 
@@ -24,13 +24,19 @@ router.get(
 
 router.get(
   "/",
-  // AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.VIEW),
+  AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.VIEW),
   AppointmentController.getAllAppointments
 );
 
 router.delete(
+  "/delete-many",
+  AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.DELETE),
+  AppointmentController.deleteManyAppointments
+);
+
+router.delete(
   "/:id",
-  // AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.DELETE),
+  AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.DELETE),
   AppointmentController.deleteAppointment
 );
 

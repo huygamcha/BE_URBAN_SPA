@@ -2,21 +2,21 @@ const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema(
   {
-    customerName: {
+    name: {
       type: String,
       required: true,
     },
-    customerPhone: {
+    phoneNumber: {
       type: String,
       required: true,
     },
-    customerEmail: {
+    email: {
       type: String,
       required: false,
     },
-    serviceId: {
+    packageId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Service",
+      ref: "Package",
       required: true,
     },
     appointmentDate: {
@@ -25,12 +25,21 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Completed", "Cancelled"],
+      enum: ["Pending", , "Completed", "Cancelled"],
       default: "Pending",
+    },
+    note: {
+      type: String,
+      default: "",
+    },
+    totalPrice: {
+      type: Number,
+      default: 0,
     },
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 
