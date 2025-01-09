@@ -3,10 +3,10 @@ const {
   CONFIG_MESSAGE_ERRORS,
   CONTEXT_NOTIFICATION,
   ACTION_NOTIFICATION_ORDER,
-} = require("../configs");
+} = require("@configs");
 const dotenv = require("dotenv");
 dotenv.config();
-const Order = require("../models/OrderProduct");
+const Order = require("@models/OrderProduct");
 const {
   getUserAndAdminTokens,
   pushNotification,

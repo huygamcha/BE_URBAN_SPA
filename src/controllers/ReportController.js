@@ -1,4 +1,4 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 const ReportService = require("../services/ReportService");
 
 const getReportCountProductType = async (req, res) => {
@@ -20,7 +20,6 @@ const getReportCountProductType = async (req, res) => {
     });
   }
 };
-
 
 const getReportCountRecords = async (req, res) => {
   try {
@@ -127,5 +126,5 @@ module.exports = {
   getReportCountUser,
   getReportTotalRevenue,
   getReportCountOrderStatus,
-  getReportCountProductStatus
+  getReportCountProductStatus,
 };

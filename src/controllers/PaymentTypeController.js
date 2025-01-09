@@ -1,5 +1,5 @@
-const { CONFIG_MESSAGE_ERRORS, PAYMENT_TYPES } = require("../configs");
-const { validateRequiredInput } = require("../utils");
+const { CONFIG_MESSAGE_ERRORS, PAYMENT_TYPES } = require("@configs");
+const { validateRequiredInput } = require("@utils");
 const PaymentTypeService = require("../services/PaymentTypeService");
 
 const createPaymentType = async (req, res) => {

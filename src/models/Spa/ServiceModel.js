@@ -1,26 +1,27 @@
 const mongoose = require("mongoose");
 
+// Schema cho option services
 const optionServiceSchema = new mongoose.Schema(
   {
     title: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     titleKo: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     titleJp: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     titleEn: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     duration: {
       type: Number,
@@ -37,6 +38,7 @@ const optionServiceSchema = new mongoose.Schema(
   }
 );
 
+// Schema cho services
 const serviceSchema = new mongoose.Schema(
   {
     name: {
@@ -60,7 +62,7 @@ const serviceSchema = new mongoose.Schema(
       ref: "Package",
       required: true,
     },
-    options: [optionServiceSchema],
+    options: [optionServiceSchema], // Dùng schema con cho các tùy chọn
   },
   {
     timestamps: true,

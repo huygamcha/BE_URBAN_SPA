@@ -1,5 +1,5 @@
-const Role = require("../models/RoleModel");
-const { CONFIG_MESSAGE_ERRORS, CONFIG_PERMISSIONS } = require("../configs");
+const Role = require("@models/RoleModel");
+const { CONFIG_MESSAGE_ERRORS, CONFIG_PERMISSIONS } = require("@configs");
 
 const createRole = (newRole) => {
   return new Promise(async (resolve, reject) => {
@@ -20,7 +20,9 @@ const createRole = (newRole) => {
       }
       const createRole = await Role.create({
         name,
-        permissions: permissions?.includes(CONFIG_PERMISSIONS.ADMIN) ? [] : permissions
+        permissions: permissions?.includes(CONFIG_PERMISSIONS.ADMIN)
+          ? []
+          : permissions,
       });
       if (createRole) {
         resolve({
@@ -153,7 +155,7 @@ const getAllRole = (params) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
-      const page = params?.page ?  +params.page :  1;
+      const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
       if (search) {
@@ -183,7 +185,6 @@ const getAllRole = (params) => {
         name: 1,
         permissions: 1,
       };
-
 
       if (page === -1 && limit === -1) {
         const allRole = await Role.find(query)

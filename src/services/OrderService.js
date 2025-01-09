@@ -3,13 +3,13 @@ const {
   PAYMENT_TYPES,
   CONTEXT_NOTIFICATION,
   ACTION_NOTIFICATION_ORDER,
-} = require("../configs");
-const Order = require("../models/OrderProduct");
-const Product = require("../models/ProductModel");
+} = require("@configs");
+const Order = require("@models/OrderProduct");
+const Product = require("@models/ProductModel");
 const EmailService = require("../services/EmailService");
-const { preparePaginationAndSorting, buildQuery } = require("../utils");
+const { preparePaginationAndSorting, buildQuery } = require("@utils");
 const mongoose = require("mongoose");
-const PaymentType = require("../models/PaymentType");
+const PaymentType = require("@models/PaymentType");
 const {
   pushNotification,
   getUserAndAdminTokens,
@@ -285,8 +285,8 @@ const updateStatusOrder = (id, data) => {
         return;
       }
 
-      if(String(data.status)) {
-        existingOrder.status = data.status
+      if (String(data.status)) {
+        existingOrder.status = data.status;
       }
 
       if (data.isPaid) {

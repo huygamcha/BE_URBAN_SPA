@@ -1,5 +1,5 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const PaymentType = require("../models/PaymentType");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const PaymentType = require("@models/PaymentType");
 
 const createPaymentType = (paymentType) => {
   return new Promise(async (resolve, reject) => {
@@ -19,7 +19,7 @@ const createPaymentType = (paymentType) => {
       }
       const createdPayment = await PaymentType.create({
         name,
-        type
+        type,
       });
       if (createdPayment) {
         resolve({

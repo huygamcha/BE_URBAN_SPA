@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 const OrderService = require("../services/OrderService");
-const { validateRequiredInput } = require("../utils");
+const { validateRequiredInput } = require("@utils");
 
 const createOrder = async (req, res) => {
   try {
@@ -176,7 +176,6 @@ const updateOrder = async (req, res) => {
   }
 };
 
-
 const updateStatusOrder = async (req, res) => {
   try {
     const orderId = req.params.orderId;
@@ -310,5 +309,5 @@ module.exports = {
   cancelOrderProduct,
   getDetailsOrderOfMe,
   cancelOrderOfMe,
-  updateStatusOrder
+  updateStatusOrder,
 };

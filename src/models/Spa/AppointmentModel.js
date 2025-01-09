@@ -36,6 +36,18 @@ const appointmentSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    language: {
+      type: String,
+      default: "vi",
+    },
+    quantity: {
+      type: Number,
+      default: 1,
+    },
+    duration: {
+      type: Number,
+      default: 15,
+    },
   },
   {
     timestamps: true,

@@ -1,5 +1,5 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const City = require("../models/CityModel");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const City = require("@models/CityModel");
 
 const createCity = (newCity) => {
   return new Promise(async (resolve, reject) => {
@@ -41,7 +41,7 @@ const updateCity = (id, data) => {
       const checkCity = await City.findOne({
         _id: id,
       });
-      
+
       if (!checkCity) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
@@ -70,7 +70,6 @@ const updateCity = (id, data) => {
           return;
         }
       }
-
 
       const updatedCity = await City.findByIdAndUpdate(id, data, {
         new: true,
@@ -168,7 +167,7 @@ const getAllCity = (params) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
-      const page = params?.page ?  +params.page :  1;
+      const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
       if (search) {

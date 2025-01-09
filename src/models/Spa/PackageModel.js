@@ -3,45 +3,50 @@ const { Schema, model } = mongoose;
 
 const packageSchema = new Schema(
   {
+    slug: {
+      type: String,
+      unique: true,
+      required: true,
+    },
     name: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     nameEn: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     nameKo: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     nameJp: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     image: {
       type: String,
-      require: true,
+      required: true,
     },
     description: {
       type: String,
-      require: true,
+      required: true,
     },
     descriptionKo: {
       type: String,
-      require: true,
+      required: true,
     },
     descriptionJp: {
       type: String,
-      require: true,
+      required: true,
     },
     descriptionEn: {
       type: String,
-      require: true,
+      required: true,
     },
   },
   {

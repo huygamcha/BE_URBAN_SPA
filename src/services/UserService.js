@@ -1,7 +1,7 @@
-const User = require("../models/UserModel");
+const User = require("@models/UserModel");
 const bcrypt = require("bcrypt");
-const { CONFIG_MESSAGE_ERRORS, CONFIG_USER_TYPE } = require("../configs");
-const { isAdminPermission } = require("../utils");
+const { CONFIG_MESSAGE_ERRORS, CONFIG_USER_TYPE } = require("@configs");
+const { isAdminPermission } = require("@utils");
 const mongoose = require("mongoose");
 
 const createUser = (newUser) => {
@@ -200,7 +200,7 @@ const getAllUser = (params) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
-      const page = params?.page ?  +params.page :  1;
+      const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
       const roleId = params?.roleId ?? "";
@@ -275,7 +275,7 @@ const getAllUser = (params) => {
         middleName: 1,
         city: 1,
         phoneNumber: 1,
-        userType: 1
+        userType: 1,
       };
 
       if (page === -1 && limit === -1) {

@@ -1,6 +1,6 @@
 const UserService = require("../services/UserService");
-const { validateRequiredInput } = require("../utils");
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { validateRequiredInput } = require("@utils");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 
 const createUser = async (req, res) => {
   try {

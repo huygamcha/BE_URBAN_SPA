@@ -1,10 +1,18 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const Appointment = require("../models/AppointmentModel");
+const Appointment = require("@models/Spa/AppointmentModel");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 
 const createAppointment = (newAppointment) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, packageId, appointmentDate, phoneNumber } =
-      newAppointment;
+    const {
+      name,
+      email,
+      packageId,
+      appointmentDate,
+      phoneNumber,
+      language = "vi",
+      quantity,
+      duration = 15,
+    } = newAppointment;
     try {
       const checkAppointment = await Appointment.findOne({
         name: name,
@@ -24,6 +32,8 @@ const createAppointment = (newAppointment) => {
         packageId,
         appointmentDate,
         phoneNumber,
+        language,
+        quantity,
       });
       if (createAppointment) {
         resolve({
@@ -68,6 +78,40 @@ const updateAppointment = (id, data) => {
       });
     } catch (e) {
       reject(e);
+    }
+  });
+};
+
+const updateStatusAppointment = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const existingAppointment = await Appointment.findById(id);
+      if (!existingAppointment) {
+        reject({
+          status: CONFIG_MESSAGE_ERRORS.INVALID.status,
+          message: `Appointment with ID ${id} not found`,
+          typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+          data: null,
+          statusMessage: "Error",
+        });
+        return;
+      }
+
+      if (data.status) {
+        existingAppointment.status = data.status;
+      }
+
+      const savedAppointment = await existingAppointment.save();
+
+      resolve({
+        status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
+        message: "Appointment updated successfully",
+        typeError: "",
+        data: savedAppointment,
+        statusMessage: "Success",
+      });
+    } catch (error) {
+      reject(error);
     }
   });
 };
@@ -141,12 +185,19 @@ const getAllAppointments = (params) => {
       const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
+      const status = params.status ?? "";
+
+      if (status) {
+        const statusOrder = status?.split("|").map((id) => id);
+        query.status = { $in: statusOrder };
+      }
 
       if (search) {
         const searchRegex = { $regex: search, $options: "i" };
         query.$or = [
-          { customerName: searchRegex },
-          { customerEmail: searchRegex },
+          { phoneNumber: searchRegex },
+          { email: searchRegex },
+          { name: searchRegex },
         ];
       }
 
@@ -159,6 +210,10 @@ const getAllAppointments = (params) => {
         totalPrice: 1,
         note: 1,
         status: 1,
+        language: 1,
+        quantity: 1,
+        duration: 1,
+        createdAt: 1,
       };
       const totalCount = await Appointment.countDocuments(query);
       const totalPage = Math.ceil(totalCount / limit);
@@ -233,6 +288,7 @@ const deleteManyAppointments = (ids) => {
 module.exports = {
   createAppointment,
   updateAppointment,
+  updateStatusAppointment,
   deleteAppointment,
   getDetailsAppointment,
   getAllAppointments,

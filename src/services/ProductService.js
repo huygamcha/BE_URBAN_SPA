@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const Product = require("../models/ProductModel");
-const User = require("../models/UserModel");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const Product = require("@models/ProductModel");
+const User = require("@models/UserModel");
 const mongoose = require("mongoose");
 
 const createProduct = (newProduct) => {
@@ -1217,7 +1217,7 @@ const getListRelatedProductBySlug = (params) => {
         });
         return;
       }
-    
+
       const pipeline = [
         { $match: query },
         { $sort: sortOptions },

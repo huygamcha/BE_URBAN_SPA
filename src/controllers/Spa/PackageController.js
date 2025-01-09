@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const { validateRequiredInput } = require("../utils");
-const PackageService = require("../services/PackageService");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const { validateRequiredInput } = require("@utils");
+const PackageService = require("../../services/Spa/PackageService");
 
 const createPackage = async (req, res) => {
   try {
@@ -14,6 +14,7 @@ const createPackage = async (req, res) => {
       "descriptionEn",
       "descriptionJp",
       "image",
+      "slug",
     ]);
 
     if (requiredFields?.length) {
@@ -128,12 +129,12 @@ const deletePackage = async (req, res) => {
 
 const deleteMany = async (req, res) => {
   try {
-    const ids = req.body.PackageIds;
+    const ids = req.body.packageIds;
     if (!ids || !ids.length) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
         status: "Error",
         typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
-        message: `The field PackageIds is required`,
+        message: `The field packageIds is required`,
       });
     }
     const response = await PackageService.deleteManyCities(ids);

@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const { validateRequiredInput } = require("../utils");
-const AppointmentService = require("../services/AppointmentService");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const { validateRequiredInput } = require("@utils");
+const AppointmentService = require("../../services/Spa/AppointmentService");
 
 const createAppointment = async (req, res) => {
   try {
@@ -10,6 +10,8 @@ const createAppointment = async (req, res) => {
       "packageId",
       "appointmentDate",
       "phoneNumber",
+      "quantity",
+      "duration",
     ]);
 
     if (requiredFields?.length) {
@@ -54,6 +56,34 @@ const updateAppointment = async (req, res) => {
       appointmentId,
       req.body
     );
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
+const updateStatusAppointment = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    if (!orderId) {
+      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
+        status: "Error",
+        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+        message: `The field orderId is required`,
+      });
+    }
+    const response = await AppointmentService.updateStatusAppointment(orderId, req.body);
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
       typeError,
@@ -186,6 +216,7 @@ const getAllAppointments = async (req, res) => {
 module.exports = {
   createAppointment,
   updateAppointment,
+  updateStatusAppointment,
   getAppointmentDetails,
   deleteAppointment,
   getAllAppointments,

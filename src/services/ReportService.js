@@ -1,9 +1,9 @@
-const { CONFIG_MESSAGE_ERRORS, CONFIG_USER_TYPE } = require("../configs");
-const Product = require("../models/ProductModel");
-const User = require("../models/UserModel");
-const Order = require("../models/OrderProduct");
-const Review = require("../models/ReviewModel");
-const Comment = require("../models/CommentModel");
+const { CONFIG_MESSAGE_ERRORS, CONFIG_USER_TYPE } = require("@configs");
+const Product = require("@models/ProductModel");
+const User = require("@models/UserModel");
+const Order = require("@models/OrderProduct");
+const Review = require("@models/ReviewModel");
+const Comment = require("@models/CommentModel");
 
 const getReportCountProductType = () => {
   return new Promise(async (resolve, reject) => {
@@ -92,10 +92,10 @@ const getReportCountRecords = () => {
         {
           $group: {
             _id: null,
-            total: { $sum: "$totalPrice" }
-          }
-        }
-        ])
+            total: { $sum: "$totalPrice" },
+          },
+        },
+      ]);
 
       resolve({
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
@@ -107,8 +107,8 @@ const getReportCountRecords = () => {
           product: productCount,
           order: orderCount,
           review: reviewCount,
-          revenue:totalRevenue?.[0]?.total,
-          comment: commentCount
+          revenue: totalRevenue?.[0]?.total,
+          comment: commentCount,
         },
       });
     } catch (e) {
@@ -138,20 +138,18 @@ const getReportCountUser = () => {
 
       const totalUser = await User.countDocuments();
 
-  
       // Organize statistics by userType
       const result = {};
       userStatistics.forEach((stat) => {
         result[stat.userType] = stat.count;
       });
 
-
       resolve({
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
         message: "Success",
         typeError: "",
         statusMessage: "Success",
-        data: {data:result, total: totalUser},
+        data: { data: result, total: totalUser },
       });
     } catch (e) {
       reject(e);
@@ -159,7 +157,7 @@ const getReportCountUser = () => {
   });
 };
 
-const  getReportTotalRevenue = () => {
+const getReportTotalRevenue = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const currentDate = new Date();
@@ -169,28 +167,30 @@ const  getReportTotalRevenue = () => {
       const revenueByMonth = await Order.aggregate([
         {
           $match: {
-            createdAt: { $gte: lastYearDate, $lte: currentDate }
-          }
+            createdAt: { $gte: lastYearDate, $lte: currentDate },
+          },
         },
         {
           $group: {
-            _id: { month: { $month: "$createdAt" }, year: { $year: "$createdAt" } },
-            total: { $sum: "$totalPrice" }
-          }
+            _id: {
+              month: { $month: "$createdAt" },
+              year: { $year: "$createdAt" },
+            },
+            total: { $sum: "$totalPrice" },
+          },
         },
         {
           $project: {
             _id: 0,
             month: "$_id.month",
             year: "$_id.year",
-            total: 1
-          }
+            total: 1,
+          },
         },
         {
-          $sort: { "year": 1, "month": 1 }
-        }
+          $sort: { year: 1, month: 1 },
+        },
       ]);
-
 
       resolve({
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
@@ -212,15 +212,15 @@ const getReportCountOrderStatus = () => {
         {
           $group: {
             _id: "$status",
-            total: { $sum: 1 }
-          }
-        }
+            total: { $sum: 1 },
+          },
+        },
       ]);
 
       const orderCount = await Order.countDocuments();
-  
+
       const statisticsByStatus = {};
-      orderStatistics.forEach(stat => {
+      orderStatistics.forEach((stat) => {
         statisticsByStatus[stat._id] = stat.total;
       });
 
@@ -231,7 +231,7 @@ const getReportCountOrderStatus = () => {
         statusMessage: "Success",
         data: {
           data: statisticsByStatus,
-          total: orderCount
+          total: orderCount,
         },
       });
     } catch (e) {
@@ -252,7 +252,7 @@ const getReportCountProductStatus = () => {
         },
       ]);
       const totalCount = await Product.countDocuments();
-  
+
       // Tổ chức thống kê theo status
       const result = {};
       productStatistics.forEach((stat) => {
@@ -266,8 +266,7 @@ const getReportCountProductStatus = () => {
         statusMessage: "Success",
         data: {
           data: result,
-          total: totalCount
-
+          total: totalCount,
         },
       });
     } catch (e) {
@@ -282,5 +281,5 @@ module.exports = {
   getReportCountUser,
   getReportTotalRevenue,
   getReportCountOrderStatus,
-  getReportCountProductStatus
+  getReportCountProductStatus,
 };

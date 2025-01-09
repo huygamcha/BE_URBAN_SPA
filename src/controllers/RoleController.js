@@ -3,8 +3,8 @@ const {
   validateRequiredInput,
   getAllPermissionValues,
   existedPermissionRole,
-} = require("../utils");
-const { CONFIG_MESSAGE_ERRORS, CONFIG_PERMISSIONS } = require("../configs");
+} = require("@utils");
+const { CONFIG_MESSAGE_ERRORS, CONFIG_PERMISSIONS } = require("@configs");
 
 const createRole = async (req, res) => {
   try {

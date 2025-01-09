@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { CONFIG_PERMISSIONS } = require("../configs");
-const { AuthPermission } = require("../middleware/AuthPermission");
-const PackageController = require("../controllers/PackageController");
+const { CONFIG_PERMISSIONS } = require("@configs");
+const { AuthPermission } = require("../../middleware/AuthPermission");
+const PackageController = require("../../controllers/Spa/PackageController");
 
 router.post(
   "/",

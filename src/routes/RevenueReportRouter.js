@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { CONFIG_PERMISSIONS } = require("../configs");
+const { CONFIG_PERMISSIONS } = require("@configs");
 const { AuthPermission } = require("../middleware/AuthPermission");
 const RevenueReportController = require("../controllers/RevenueReportController");
 
@@ -35,4 +35,3 @@ router.delete(
 );
 
 module.exports = router;
-

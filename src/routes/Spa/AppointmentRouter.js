@@ -1,12 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const { CONFIG_PERMISSIONS } = require("../configs");
-const { AuthPermission } = require("../middleware/AuthPermission");
-const AppointmentController = require("../controllers/AppointmentController");
+const { CONFIG_PERMISSIONS } = require("@configs");
+const { AuthPermission } = require("../../middleware/AuthPermission");
+const AppointmentController = require("../../controllers/Spa/AppointmentController");
+
+router.put(
+  "/status/:orderId",
+  AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.UPDATE),
+  AppointmentController.updateStatusAppointment
+);
 
 router.post(
   "/",
-  AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.CREATE),
+  // AuthPermission(CONFIG_PERMISSIONS.APPOINTMENT.CREATE),
   AppointmentController.createAppointment
 );
 

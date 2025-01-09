@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const ProductTypeController = require("../controllers/ProductTypeController");
 const { AuthPermission } = require("../middleware/AuthPermission");
-const { CONFIG_PERMISSIONS } = require("../configs");
+const { CONFIG_PERMISSIONS } = require("@configs");
 
 router.post(
   "/",
@@ -16,15 +16,9 @@ router.put(
   ProductTypeController.updateProductType
 );
 
-router.get(
-  "/:id",
-  ProductTypeController.getDetailsProductType
-);
+router.get("/:id", ProductTypeController.getDetailsProductType);
 
-router.get(
-  "/",
-  ProductTypeController.getAllProductType
-);
+router.get("/", ProductTypeController.getAllProductType);
 
 router.delete(
   "/delete-many",

@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { CONFIG_PERMISSIONS } = require("../configs");
-const { AuthPermission } = require("../middleware/AuthPermission");
-const ServiceController = require("../controllers/ServiceController");
+const { CONFIG_PERMISSIONS } = require("@configs");
+const { AuthPermission } = require("../../middleware/AuthPermission");
+const ServiceController = require("../../controllers/Spa/ServiceController");
 
 router.post(
   "/",
@@ -26,6 +26,12 @@ router.get(
   "/",
   // AuthPermission(CONFIG_PERMISSIONS.SERVICE.VIEW),
   ServiceController.getAllService
+);
+
+router.delete(
+  "/delete-many",
+  AuthPermission(CONFIG_PERMISSIONS.SERVICE.DELETE),
+  ServiceController.deleteMany
 );
 
 router.delete(

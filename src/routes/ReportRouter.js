@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { CONFIG_PERMISSIONS } = require("../configs");
+const { CONFIG_PERMISSIONS } = require("@configs");
 const { AuthPermission } = require("../middleware/AuthPermission");
-const ReportController = require("../controllers/ReportController")
+const ReportController = require("../controllers/ReportController");
 
 router.get(
   "/product-type/count",

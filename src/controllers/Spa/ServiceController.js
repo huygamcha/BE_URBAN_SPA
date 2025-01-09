@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const { validateRequiredInput } = require("../utils");
-const ServiceService = require("../services/ServiceService");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const { validateRequiredInput } = require("@utils");
+const ServiceService = require("../../services/Spa/ServiceService");
 
 const createService = async (req, res) => {
   try {
@@ -12,6 +12,8 @@ const createService = async (req, res) => {
       "packageId",
       "options",
     ]);
+
+    console.log("««««« 12312 »»»»»", 12312);
 
     if (requiredFields?.length) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
@@ -30,6 +32,7 @@ const createService = async (req, res) => {
       status: statusMessage,
     });
   } catch (e) {
+    console.log("««««« e »»»»»", e);
     return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
       message: "Internal Server Error",
       data: e,
@@ -126,6 +129,7 @@ const deleteService = async (req, res) => {
 const deleteMany = async (req, res) => {
   try {
     const ids = req.body.serviceIds;
+    console.log("««««« ids »»»»»", ids);
     if (!ids || !ids.length) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
         status: "Error",
@@ -142,6 +146,7 @@ const deleteMany = async (req, res) => {
       status: statusMessage,
     });
   } catch (e) {
+    console.log("««««« e »»»»»", e);
     return res.status(200).json({
       message: "Internal Server Error",
       data: null,

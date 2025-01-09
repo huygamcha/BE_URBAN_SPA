@@ -15,10 +15,10 @@ const PaymentTypeRouter = require("./PaymentTypeRouter");
 const ReportRouter = require("./ReportRouter");
 const NotificationRouter = require("./NotificationRouter");
 const CommentRouter = require("./CommentRouter");
-const AppointmentRouter = require("./AppointmentRouter");
 
-const PackageRouter = require("./PackageRouter");
-const ServiceRouter = require("./ServiceRouter");
+const AppointmentRouter = require("./Spa/AppointmentRouter");
+const PackageRouter = require("./Spa/PackageRouter");
+const ServiceRouter = require("./Spa/ServiceRouter");
 
 routes.use("/auth", AuthRouter);
 routes.use("/users", UserRouter);

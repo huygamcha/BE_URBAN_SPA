@@ -1,5 +1,5 @@
 const NotificationService = require("../services/NotificationService");
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 
 const getListNotifications = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ const getListNotifications = async (req, res) => {
 
     const response = await NotificationService.getListNotifications(
       userId,
-      params,
+      params
     );
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
@@ -26,11 +26,10 @@ const getListNotifications = async (req, res) => {
   }
 };
 
-
 const readOneNotification = async (req, res) => {
   try {
     const userId = req.userId;
-    const permissions = req.permissions
+    const permissions = req.permissions;
     const notificationId = req.params.id;
     if (!notificationId) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
@@ -65,7 +64,7 @@ const deleteNotification = async (req, res) => {
   try {
     const userId = req.userId;
     const notificationId = req.params.id;
-    const permissions = req.permissions
+    const permissions = req.permissions;
 
     if (!notificationId) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
@@ -88,7 +87,6 @@ const deleteNotification = async (req, res) => {
       status: statusMessage,
     });
   } catch (e) {
-
     return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
       typeError: "Internal Server Error",
       data: null,
@@ -101,9 +99,7 @@ const readAllNotification = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const response = await NotificationService.readAllNotification(
-      userId,
-    );
+    const response = await NotificationService.readAllNotification(userId);
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
       typeError,

@@ -1,9 +1,9 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const DeliveryType = require("../models/DeliveryType");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const DeliveryType = require("@models/DeliveryType");
 
 const createDeliveryType = (newType) => {
   return new Promise(async (resolve, reject) => {
-    const { name,price } = newType;
+    const { name, price } = newType;
     try {
       const checkDelivery = await DeliveryType.findOne({
         name: name,
@@ -19,7 +19,7 @@ const createDeliveryType = (newType) => {
       }
       const createdDeliveryType = await DeliveryType.create({
         name,
-        price
+        price,
       });
       if (createdDeliveryType) {
         resolve({
@@ -167,7 +167,7 @@ const getAllDeliveryType = (params) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
-      const page = params?.page ?  +params.page :  1;
+      const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
       if (search) {

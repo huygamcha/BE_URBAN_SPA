@@ -1,5 +1,5 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const ProductType = require("../models/ProductType");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const ProductType = require("@models/ProductType");
 
 const createProductType = (newProductType) => {
   return new Promise(async (resolve, reject) => {
@@ -168,13 +168,13 @@ const getAllProductType = (params) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
-      const page = params?.page ?  +params.page :  1;
+      const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
       if (search) {
         const searchRegex = { $regex: search, $options: "i" };
 
-        query.$or = [{ name: searchRegex },{ slug: searchRegex }];
+        query.$or = [{ name: searchRegex }, { slug: searchRegex }];
       }
 
       const totalCount = await ProductType.countDocuments(query);
@@ -216,7 +216,7 @@ const getAllProductType = (params) => {
         });
         return;
       }
-      
+
       const allProductType = await ProductType.find(query)
         .skip(startIndex)
         .limit(limit)

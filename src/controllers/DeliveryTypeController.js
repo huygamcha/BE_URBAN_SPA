@@ -1,5 +1,5 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const { validateRequiredInput } = require("../utils");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const { validateRequiredInput } = require("@utils");
 const DeliveryTypeService = require("../services/DeliveryTypeService");
 
 const createDeliveryType = async (req, res) => {
@@ -129,7 +129,9 @@ const deleteDeliveryType = async (req, res) => {
         message: `The field deliveryTypeId is required`,
       });
     }
-    const response = await DeliveryTypeService.deleteDeliveryType(deliveryTypeId);
+    const response = await DeliveryTypeService.deleteDeliveryType(
+      deliveryTypeId
+    );
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
       typeError,

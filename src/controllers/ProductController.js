@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 const ProductService = require("../services/ProductService");
-const { validateRequiredInput, validateDiscountDate } = require("../utils");
+const { validateRequiredInput, validateDiscountDate } = require("@utils");
 
 const createProduct = async (req, res) => {
   try {
@@ -24,7 +24,7 @@ const createProduct = async (req, res) => {
         message: `The field ${requiredFields.join(", ")} is required`,
         data: null,
       });
-    } 
+    }
     if (!discountValidation.isValid) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
         status: "Error",
@@ -82,7 +82,7 @@ const updateProduct = async (req, res) => {
         message: `The field ${requiredFields.join(", ")} is required`,
         data: null,
       });
-    }  
+    }
     if (!discountValidation.isValid) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
         status: "Error",
@@ -128,7 +128,7 @@ const getDetailsProduct = async (req, res) => {
       status: statusMessage,
     });
   } catch (e) {
-    console.log("products", {e})
+    console.log("products", { e });
     return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
       message: "Internal Server Error",
       data: null,

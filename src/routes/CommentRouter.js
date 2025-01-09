@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const CommentController = require("../controllers/CommentController");
 const { AuthPermission } = require("../middleware/AuthPermission");
-const { CONFIG_PERMISSIONS } = require("../configs");
+const { CONFIG_PERMISSIONS } = require("@configs");
 
 router.post("/reply", CommentController.replyComment);
 

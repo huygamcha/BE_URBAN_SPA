@@ -1,14 +1,14 @@
-const User = require("../models/UserModel");
+const User = require("@models/UserModel");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("./JwtService");
 const {
   CONFIG_MESSAGE_ERRORS,
   CONFIG_PERMISSIONS,
   CONFIG_USER_TYPE,
-} = require("../configs");
+} = require("@configs");
 const EmailService = require("../services/EmailService");
 const dotenv = require("dotenv");
-const { addToBlacklist, isAdminPermission } = require("../utils");
+const { addToBlacklist, isAdminPermission } = require("@utils");
 dotenv.config();
 const moment = require("moment/moment");
 
@@ -145,7 +145,7 @@ const updateAuthMe = (id, data, isPermission) => {
     try {
       const checkUser = await User.findOne({
         _id: id,
-      })
+      });
 
       if (!checkUser) {
         resolve({
@@ -205,23 +205,23 @@ const updateAuthMe = (id, data, isPermission) => {
         }
       }
 
-      if(data.city) {
-        checkUser.city = data.city
+      if (data.city) {
+        checkUser.city = data.city;
       }
 
-      if(data.role) {
-        checkUser.role = data.role
+      if (data.role) {
+        checkUser.role = data.role;
       }
 
-      checkUser.firstName =data.firstName
-      checkUser.lastName =data.lastName
-      checkUser.middleName =data.middleName
-      checkUser.email =data.email || checkUser.email
-      checkUser.phoneNumber = ""
-      checkUser.avatar =data.avatar
-      checkUser.address =data.address
-      checkUser.addresses =data.addresses || checkUser.addresses
-      await checkUser.save()
+      checkUser.firstName = data.firstName;
+      checkUser.lastName = data.lastName;
+      checkUser.middleName = data.middleName;
+      checkUser.email = data.email || checkUser.email;
+      checkUser.phoneNumber = "";
+      checkUser.avatar = data.avatar;
+      checkUser.address = data.address;
+      checkUser.addresses = data.addresses || checkUser.addresses;
+      await checkUser.save();
 
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
@@ -239,10 +239,10 @@ const updateAuthMe = (id, data, isPermission) => {
 const updateDeviceToken = (id, data, isPermission) => {
   return new Promise(async (resolve, reject) => {
     try {
-    const {  deviceToken } = data;
+      const { deviceToken } = data;
       const checkUser = await User.findOne({
         _id: id,
-      })
+      });
 
       if (!checkUser) {
         resolve({
@@ -532,7 +532,7 @@ const registerGoogle = (idToken) => {
 const loginGoogle = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { idToken, deviceToken = "" } =data;
+      const { idToken, deviceToken = "" } = data;
       const payload = await verifyGoogleIdToken(idToken);
       if (!payload) {
         resolve({
@@ -738,5 +738,5 @@ module.exports = {
   loginFacebook,
   loginGoogle,
   registerUser,
-  updateDeviceToken
+  updateDeviceToken,
 };

@@ -1,5 +1,5 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const { validateRequiredInput } = require("../utils");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const { validateRequiredInput } = require("@utils");
 const CityService = require("../services/CityService");
 
 const createCity = async (req, res) => {
@@ -42,10 +42,7 @@ const updateCity = async (req, res) => {
         message: `The field cityId is required`,
       });
     }
-    const response = await CityService.updateCity(
-      cityId,
-      req.body
-    );
+    const response = await CityService.updateCity(cityId, req.body);
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
       typeError,
@@ -73,9 +70,7 @@ const getDetailsCity = async (req, res) => {
         message: `The field cityId is required`,
       });
     }
-    const response = await CityService.getDetailsCity(
-      cityId
-    );
+    const response = await CityService.getDetailsCity(cityId);
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
       typeError,

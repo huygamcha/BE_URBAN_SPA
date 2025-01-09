@@ -1,36 +1,52 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
-const Service = require("../models/ServiceModel");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
+const Package = require("@models/Spa/PackageModel");
 
-const createService = (newService) => {
+const createPackage = (newPackage) => {
   return new Promise(async (resolve, reject) => {
-    const { name, nameKo, nameJp, nameEn, packageId, options } = newService;
+    const {
+      name,
+      nameKo,
+      nameEn,
+      nameJp,
+      description,
+      descriptionKo,
+      descriptionEn,
+      descriptionJp,
+      image,
+      slug,
+    } = newPackage;
+
     try {
-      const checkService = await Service.findOne({
+      const checkPackage = await Package.findOne({
         name: name,
       });
-      if (checkService !== null) {
+      if (checkPackage !== null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
-          message: "The name of service is existed",
+          message: "The name of Package is existed",
           typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
           data: null,
           statusMessage: "Error",
         });
       }
-      const createService = await Service.create({
+      const createPackage = await Package.create({
         name,
         nameKo,
-        nameJp,
         nameEn,
-        packageId,
-        options,
+        nameJp,
+        description,
+        descriptionKo,
+        descriptionEn,
+        descriptionJp,
+        image,
+        slug,
       });
-      if (createService) {
+      if (createPackage) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-          message: "Created service success",
+          message: "Created Package success",
           typeError: "",
-          data: createService,
+          data: createPackage,
           statusMessage: "Success",
         });
       }
@@ -40,17 +56,17 @@ const createService = (newService) => {
   });
 };
 
-const updateService = (id, data) => {
+const updatePackage = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkService = await Service.findOne({
+      const checkPackage = await Package.findOne({
         _id: id,
       });
 
-      if (!checkService) {
+      if (!checkPackage) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "The service is not existed",
+          message: "The Package is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
@@ -58,8 +74,8 @@ const updateService = (id, data) => {
         return;
       }
 
-      if (data.name && data.name !== checkService.name) {
-        const existedName = await Service.findOne({
+      if (data.name && data.name !== checkPackage.name) {
+        const existedName = await Package.findOne({
           name: data.name,
           _id: { $ne: id },
         });
@@ -67,7 +83,7 @@ const updateService = (id, data) => {
         if (existedName !== null) {
           resolve({
             status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
-            message: "The name of service is existed",
+            message: "The name of Package is existed",
             typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
             data: null,
             statusMessage: "Error",
@@ -76,14 +92,14 @@ const updateService = (id, data) => {
         }
       }
 
-      const updatedService = await Service.findByIdAndUpdate(id, data, {
+      const updatedPackage = await Package.findByIdAndUpdate(id, data, {
         new: true,
       });
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Updated service type success",
+        message: "Updated Package type success",
         typeError: "",
-        data: updatedService,
+        data: updatedPackage,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -92,28 +108,28 @@ const updateService = (id, data) => {
   });
 };
 
-const deleteService = (id) => {
+const deletePackage = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkService = await Service.findOne({
+      const checkPackage = await Package.findOne({
         _id: id,
       });
-      if (checkService === null) {
+      if (checkPackage === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "The service name is not existed",
+          message: "The Package name is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
         });
       }
 
-      await Service.findByIdAndDelete(id);
+      await Package.findByIdAndDelete(id);
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Deleted service success",
+        message: "Deleted Package success",
         typeError: "",
-        data: checkService,
+        data: checkPackage,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -122,13 +138,13 @@ const deleteService = (id) => {
   });
 };
 
-const deleteManyServices = (ids) => {
+const deleteManyCities = (ids) => {
   return new Promise(async (resolve, reject) => {
     try {
-      await Service.deleteMany({ _id: ids });
+      await Package.deleteMany({ _id: ids });
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Delete services success",
+        message: "Delete packages success",
         typeError: "",
         data: null,
         statusMessage: "Success",
@@ -139,16 +155,43 @@ const deleteManyServices = (ids) => {
   });
 };
 
-const getDetailService = (id) => {
+const getDetailsPackage = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkService = await Service.findOne({
+      const fieldsToSelect = {
+        name: 1,
+        nameKo: 1,
+        nameEn: 1,
+        nameJp: 1,
+        description: 1,
+        descriptionKo: 1,
+        descriptionEn: 1,
+        descriptionJp: 1,
+        image: 1,
+        slug: 1,
+        services: 1,
+      };
+      const checkPackage = await Package.findOne({
         _id: id,
       });
-      if (checkService === null) {
+
+      // const checkPackage = await Package.aggregate([
+      //   {
+      //     $match: { _id: id },
+      //   },
+      //   {
+      //     $lookup: {
+      //       from: "services",
+      //       localField: "_id",
+      //       foreignField: "packageId",
+      //       as: "services",
+      //     },
+      //   },
+      // ]);
+      if (checkPackage === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "The service is not existed",
+          message: "The Package is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
@@ -158,7 +201,7 @@ const getDetailService = (id) => {
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
         message: "Success",
         typeError: "",
-        data: checkService,
+        data: checkPackage,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -167,7 +210,7 @@ const getDetailService = (id) => {
   });
 };
 
-const getAllService = (params) => {
+const getAllPackage = (params) => {
   return new Promise(async (resolve, reject) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
@@ -178,10 +221,16 @@ const getAllService = (params) => {
       if (search) {
         const searchRegex = { $regex: search, $options: "i" };
 
-        query.$or = [{ name: searchRegex }];
+        query.$or = [
+          { slug: searchRegex },
+          { name: searchRegex },
+          { nameKo: searchRegex },
+          { nameJp: searchRegex },
+          { nameEn: searchRegex },
+        ];
       }
 
-      const totalCount = await Service.countDocuments(query);
+      const totalCount = await Package.countDocuments(query);
 
       const totalPage = Math.ceil(totalCount / limit);
 
@@ -196,27 +245,44 @@ const getAllService = (params) => {
           sortOptions[name] = direction.toLowerCase() === "asc" ? 1 : -1;
         });
       }
-
       const fieldsToSelect = {
         name: 1,
         nameKo: 1,
+        nameEn: 1,
         nameJp: 1,
-        nameKr: 1,
-        packageId: 1,
-        options: 1,
+        description: 1,
+        descriptionKo: 1,
+        descriptionEn: 1,
+        descriptionJp: 1,
+        image: 1,
+        slug: 1,
+        services: 1,
       };
 
       if (page === -1 && limit === -1) {
-        const allService = await Service.find(query)
-          .sort(sortOptions)
-          .select(fieldsToSelect);
+        // const allPackage = await Package.find(query)
+        //   .sort(sortOptions)
+        //   .select(fieldsToSelect);
+        const allPackage = await Package.aggregate([
+          { $match: query },
+          {
+            $lookup: {
+              from: "services",
+              localField: "_id",
+              foreignField: "packageId",
+              as: "services",
+            },
+          },
+          { $project: fieldsToSelect },
+        ]);
+
         resolve({
           status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
           message: "Success",
           typeError: "",
           statusMessage: "Success",
           data: {
-            services: allService,
+            packages: allPackage,
             totalPage: 1,
             totalCount: totalCount,
           },
@@ -224,7 +290,7 @@ const getAllService = (params) => {
         return;
       }
 
-      const allService = await Service.find(query)
+      const allPackage = await Package.find(query)
         .skip(startIndex)
         .limit(limit)
         .sort(sortOptions)
@@ -235,7 +301,7 @@ const getAllService = (params) => {
         typeError: "",
         statusMessage: "Success",
         data: {
-          services: allService,
+          packages: allPackage,
           totalPage: totalPage,
           totalCount: totalCount,
         },
@@ -247,10 +313,10 @@ const getAllService = (params) => {
 };
 
 module.exports = {
-  createService,
-  updateService,
-  getDetailService,
-  deleteService,
-  getAllService,
-  deleteManyServices,
+  createPackage,
+  updatePackage,
+  getDetailsPackage,
+  deletePackage,
+  getAllPackage,
+  deleteManyCities,
 };

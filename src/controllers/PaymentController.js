@@ -1,5 +1,5 @@
-const { CONFIG_MESSAGE_ERRORS, PAYMENT_TYPES } = require("../configs");
-const { validateRequiredInput } = require("../utils");
+const { CONFIG_MESSAGE_ERRORS, PAYMENT_TYPES } = require("@configs");
+const { validateRequiredInput } = require("@utils");
 const PaymentTypeService = require("../services/PaymentService");
 
 const createUrlPaymentVNPay = async (req, res) => {
@@ -53,7 +53,7 @@ const getVNPayIpnPaymentVNPay = async (req, res) => {
       "vnp_SecureHash",
       "vnp_TxnRef",
       "vnp_ResponseCode",
-      "orderId"
+      "orderId",
     ]);
 
     if (requiredFields?.length) {
@@ -86,5 +86,5 @@ const getVNPayIpnPaymentVNPay = async (req, res) => {
 
 module.exports = {
   createUrlPaymentVNPay,
-  getVNPayIpnPaymentVNPay
+  getVNPayIpnPaymentVNPay,
 };

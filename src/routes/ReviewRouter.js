@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const ReviewController = require("../controllers/ReviewController");
 const { AuthPermission } = require("../middleware/AuthPermission");
-const { CONFIG_PERMISSIONS } = require("../configs");
+const { CONFIG_PERMISSIONS } = require("@configs");
 
 router.post("/", ReviewController.createReview);
 
@@ -19,8 +19,6 @@ router.put(
 );
 
 router.get("/:id", ReviewController.getDetailsReview);
-
-
 
 router.get("/", ReviewController.getAllReview);
 

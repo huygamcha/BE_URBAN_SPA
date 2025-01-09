@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS, ACTION_SOCKET_COMMENT } = require("../configs");
-const Comment = require("../models/CommentModel");
-const { buildQuery, preparePaginationAndSorting } = require("../utils");
+const { CONFIG_MESSAGE_ERRORS, ACTION_SOCKET_COMMENT } = require("@configs");
+const Comment = require("@models/CommentModel");
+const { buildQuery, preparePaginationAndSorting } = require("@utils");
 const mongoose = require("mongoose");
 const socketModule = require("../socket");
 

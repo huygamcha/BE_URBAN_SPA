@@ -1,4 +1,4 @@
-const { CONFIG_PERMISSIONS } = require("../configs");
+const { CONFIG_PERMISSIONS } = require("@configs");
 const fs = require("fs");
 const BLACKLIST_FILE = "blacklist.json";
 const dotenv = require("dotenv");
@@ -141,7 +141,7 @@ const isAdminPermission = (permissions) => {
 };
 
 const validateDiscountDate = (discount, discountStartDate, discountEndDate) => {
-  try{
+  try {
     if (discount > 0) {
       if (!discountStartDate || !discountEndDate) {
         return {
@@ -149,7 +149,7 @@ const validateDiscountDate = (discount, discountStartDate, discountEndDate) => {
           error: "Discount must have both start and end dates.",
         };
       }
-  
+
       if (discountStartDate.getTime() < new Date().setHours(0, 0, 0, 0)) {
         return {
           isValid: false,
@@ -157,19 +157,18 @@ const validateDiscountDate = (discount, discountStartDate, discountEndDate) => {
             "Discount start date should be greater than or equal to the current date.",
         };
       }
-  
+
       if (discountEndDate.getTime() <= discountStartDate.getTime()) {
         return {
           isValid: false,
           error: "Discount end date should be greater than the start date.",
         };
       }
-  
     }
-  
+
     return { isValid: true, error: null };
-  }catch (e) {
-    return { isValid: false, error: e }
+  } catch (e) {
+    return { isValid: false, error: e };
   }
 };
 
@@ -189,5 +188,5 @@ module.exports = {
   isTokenInBlacklist,
   isAdminPermission,
   validateDiscountDate,
-  uniqueValuesArr
+  uniqueValuesArr,
 };

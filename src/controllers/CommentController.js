@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 const CommentService = require("../services/CommentService");
-const { validateRequiredInput } = require("../utils");
+const { validateRequiredInput } = require("@utils");
 
 const createComment = async (req, res) => {
   try {
@@ -42,7 +42,7 @@ const replyComment = async (req, res) => {
       "content",
       "user",
       "product",
-      "parent"
+      "parent",
     ]);
 
     if (requiredFields?.length) {
@@ -237,7 +237,6 @@ const getAllComment = async (req, res) => {
   }
 };
 
-
 const getAllCommentPublic = async (req, res) => {
   try {
     const params = req.query;
@@ -304,5 +303,5 @@ module.exports = {
   updateMyComment,
   deleteMyComment,
   replyComment,
-  getAllCommentPublic
+  getAllCommentPublic,
 };

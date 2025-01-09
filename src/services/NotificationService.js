@@ -2,11 +2,11 @@ const {
   CONFIG_MESSAGE_ERRORS,
   CONFIG_PERMISSIONS,
   ACTION_NOTIFICATION_ORDER,
-} = require("../configs");
-const Notification = require("../models/Notification");
-const User = require("../models/UserModel");
-const Role = require("../models/RoleModel");
-const { uniqueValuesArr } = require("../utils");
+} = require("@configs");
+const Notification = require("@models/Notification");
+const User = require("@models/UserModel");
+const Role = require("@models/RoleModel");
+const { uniqueValuesArr } = require("@utils");
 const { getMessaging } = require("firebase-admin/messaging");
 
 const pushMessageToFirebase = async (data) => {
@@ -36,8 +36,14 @@ const getUserAndAdminTokens = async (userId) => {
       adminDeviceTokens?.push?.apply(adminDeviceTokens, admin.deviceTokens);
       adminIds.push(admin._id?.toString());
     });
-    const uniqueIdUser = uniqueValuesArr([currentUser?._id?.toString(),...adminIds]);
-    const uniqueDeviceToken = uniqueValuesArr([...currentUser?.deviceTokens,...adminDeviceTokens]);
+    const uniqueIdUser = uniqueValuesArr([
+      currentUser?._id?.toString(),
+      ...adminIds,
+    ]);
+    const uniqueDeviceToken = uniqueValuesArr([
+      ...currentUser?.deviceTokens,
+      ...adminDeviceTokens,
+    ]);
 
     return { recipientIds: uniqueIdUser, deviceTokens: uniqueDeviceToken };
   } catch (error) {
@@ -157,7 +163,9 @@ const getListNotifications = (userId, params) => {
           .lean();
 
         const modifiedNotifications = allNotification.map((notification) => {
-          const findIsRead = notification?.recipientIds?.find((item) => item?.userId?.toString() === userId)
+          const findIsRead = notification?.recipientIds?.find(
+            (item) => item?.userId?.toString() === userId
+          );
           const { recipientIds, ...rest } = notification;
           return {
             ...rest,

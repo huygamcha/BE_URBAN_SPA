@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 const ProductTypeService = require("../services/ProductTypeService");
-const { validateRequiredInput } = require("../utils");
+const { validateRequiredInput } = require("@utils");
 
 const createProductType = async (req, res) => {
   try {

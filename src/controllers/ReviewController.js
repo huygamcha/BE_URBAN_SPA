@@ -1,6 +1,6 @@
-const { CONFIG_MESSAGE_ERRORS } = require("../configs");
+const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 const ReviewService = require("../services/ReviewService");
-const { validateRequiredInput } = require("../utils");
+const { validateRequiredInput } = require("@utils");
 
 const createReview = async (req, res) => {
   try {
