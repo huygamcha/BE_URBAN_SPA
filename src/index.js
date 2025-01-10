@@ -40,7 +40,7 @@ app.use(cookieParser());
 app.use("/api/v1.0", routes);
 
 mongoose
-  .connect(`${process.env.MONGO_DB}urbanSpa`)
+  .connect(`${process.env.MONGO_DB}urbanSpa?authSource=admin`)
   .then(() => {
     // console.log("Connect Db success!");
   })

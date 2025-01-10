@@ -9,7 +9,7 @@ const initializeDB = async () => {
   try {
     // Kết nối đến cơ sở dữ liệu
     await mongoose
-      .connect(`${process.env.MONGO_DB}urbanSpa`, {
+      .connect(`${process.env.MONGO_DB}urbanSpa?authSource=admin`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       })
@@ -26,7 +26,7 @@ const initializeDB = async () => {
 
         await defaultAdminRole.save();
         await defaultBasicRole.save();
-
+        console.log('««««« 33 »»»»»', 33);
         const hash = bcrypt.hashSync("1234Kha@", 10);
         const roleAdmin = await Role.findOne({ name: "Admin" });
         if (roleAdmin) {
@@ -42,10 +42,10 @@ const initializeDB = async () => {
         mongoose.connection.close();
       })
       .catch((e) => {
-        // console.log("Error init data", e);
+        console.log("Error init data", e);
       });
   } catch (error) {
-    // console.log("Error init data", error);
+    console.log("Error init data", error);
   }
 };
 
