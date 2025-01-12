@@ -41,6 +41,26 @@ const getReportCountRecords = async (req, res) => {
   }
 };
 
+const getReportCountRecordsSpa = async (req, res) => {
+  try {
+    const response = await ReportService.getReportCountRecordsSpa();
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
 const getReportCountUser = async (req, res) => {
   try {
     const response = await ReportService.getReportCountUser();
@@ -80,6 +100,7 @@ const getReportTotalRevenue = async (req, res) => {
     });
   }
 };
+
 const getReportCountOrderStatus = async (req, res) => {
   try {
     const response = await ReportService.getReportCountOrderStatus();
@@ -127,4 +148,5 @@ module.exports = {
   getReportTotalRevenue,
   getReportCountOrderStatus,
   getReportCountProductStatus,
+  getReportCountRecordsSpa
 };

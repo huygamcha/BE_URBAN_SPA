@@ -4,6 +4,8 @@ const User = require("@models/UserModel");
 const Order = require("@models/OrderProduct");
 const Review = require("@models/ReviewModel");
 const Comment = require("@models/CommentModel");
+const Package = require("../models/Spa/PackageModel");
+const Appointment = require("../models/Spa/AppointmentModel");
 
 const getReportCountProductType = () => {
   return new Promise(async (resolve, reject) => {
@@ -117,6 +119,47 @@ const getReportCountRecords = () => {
   });
 };
 
+const getReportCountRecordsSpa = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const userCount = await User.countDocuments();
+      const packageCount = await Package.countDocuments();
+      const appointmentCount = await Appointment.countDocuments();
+      // const totalRevenue = await Order.aggregate([
+      //   {
+      //     $group: {
+      //       _id: null,
+      //       total: { $sum: "$totalPrice" },
+      //     },
+      //   },
+      // ]);
+      const totalRevenue = await Appointment.aggregate([
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$totalPrice" },
+          },
+        },
+      ]);
+
+      resolve({
+        status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
+        message: "Success",
+        typeError: "",
+        statusMessage: "Success",
+        data: {
+          user: userCount,
+          revenue: totalRevenue?.[0]?.total,
+          package: packageCount,
+          appointment: appointmentCount,
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const getReportCountUser = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -164,12 +207,12 @@ const getReportTotalRevenue = () => {
       const lastYearDate = new Date();
       lastYearDate.setFullYear(lastYearDate.getFullYear() - 1);
 
-      const revenueByMonth = await Order.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: lastYearDate, $lte: currentDate },
-          },
-        },
+      const revenueByMonth = await Appointment.aggregate([
+        // {
+        //   $match: {
+        //     createdAt: { $gte: lastYearDate, $lte: currentDate },
+        //   },
+        // },
         {
           $group: {
             _id: {
@@ -208,7 +251,7 @@ const getReportTotalRevenue = () => {
 const getReportCountOrderStatus = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const orderStatistics = await Order.aggregate([
+      const orderStatistics = await Appointment.aggregate([
         {
           $group: {
             _id: "$status",
@@ -217,7 +260,7 @@ const getReportCountOrderStatus = () => {
         },
       ]);
 
-      const orderCount = await Order.countDocuments();
+      const orderCount = await Appointment.countDocuments();
 
       const statisticsByStatus = {};
       orderStatistics.forEach((stat) => {
@@ -282,4 +325,5 @@ module.exports = {
   getReportTotalRevenue,
   getReportCountOrderStatus,
   getReportCountProductStatus,
+  getReportCountRecordsSpa,
 };

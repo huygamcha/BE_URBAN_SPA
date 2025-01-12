@@ -48,6 +48,10 @@ const packageSchema = new Schema(
       type: String,
       required: true,
     },
+    booking: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     versionKey: false,

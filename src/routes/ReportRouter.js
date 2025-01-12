@@ -23,6 +23,12 @@ router.get(
 );
 
 router.get(
+  "/all-records/spa/count",
+  AuthPermission(CONFIG_PERMISSIONS.DASHBOARD),
+  ReportController.getReportCountRecordsSpa
+);
+
+router.get(
   "/revenue-total",
   AuthPermission(CONFIG_PERMISSIONS.DASHBOARD),
   ReportController.getReportTotalRevenue

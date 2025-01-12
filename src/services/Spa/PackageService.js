@@ -257,6 +257,7 @@ const getAllPackage = (params) => {
         image: 1,
         slug: 1,
         services: 1,
+        booking: 1,
       };
 
       if (page === -1 && limit === -1) {
