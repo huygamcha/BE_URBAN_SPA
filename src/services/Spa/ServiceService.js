@@ -3,7 +3,19 @@ const Service = require("@models/Spa/ServiceModel");
 
 const createService = (newService) => {
   return new Promise(async (resolve, reject) => {
-    const { name, nameKo, nameJp, nameEn, packageId, options } = newService;
+    const {
+      name,
+      nameKo,
+      nameJp,
+      nameEn,
+      packageId,
+      options,
+      description,
+      descriptionKo,
+      descriptionJp,
+      descriptionEn,
+    } = newService;
+
     try {
       const checkService = await Service.findOne({
         name: name,
@@ -24,6 +36,10 @@ const createService = (newService) => {
         nameEn,
         packageId,
         options,
+        description,
+        descriptionKo,
+        descriptionJp,
+        descriptionEn,
       });
       if (createService) {
         resolve({
@@ -205,6 +221,10 @@ const getAllService = (params) => {
         nameEn: 1,
         packageId: 1,
         options: 1,
+        description: 1,
+        descriptionKo: 1,
+        descriptionJp: 1,
+        descriptionEn: 1,
       };
 
       if (page === -1 && limit === -1) {

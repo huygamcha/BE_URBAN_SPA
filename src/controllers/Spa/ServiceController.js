@@ -9,11 +9,13 @@ const createService = async (req, res) => {
       "nameKo",
       "nameJp",
       "nameEn",
+      "description",
+      "descriptionKo",
+      "descriptionJp",
+      "descriptionEn",
       "packageId",
       "options",
     ]);
-
-    console.log("««««« 12312 »»»»»", 12312);
 
     if (requiredFields?.length) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({

@@ -9,10 +9,6 @@ const createPackage = async (req, res) => {
       "nameKo",
       "nameEn",
       "nameJp",
-      "description",
-      "descriptionKo",
-      "descriptionEn",
-      "descriptionJp",
       "image",
       "slug",
     ]);

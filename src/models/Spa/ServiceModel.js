@@ -23,6 +23,7 @@ const optionServiceSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+
     duration: {
       type: Number,
       required: true,
@@ -55,6 +56,26 @@ const serviceSchema = new mongoose.Schema(
     },
     nameJp: {
       type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    descriptionKo: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    descriptionJp: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    descriptionEn: {
+      type: String,
+      unique: true,
       required: true,
     },
     packageId: {

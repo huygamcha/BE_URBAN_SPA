@@ -3,18 +3,7 @@ const Package = require("@models/Spa/PackageModel");
 
 const createPackage = (newPackage) => {
   return new Promise(async (resolve, reject) => {
-    const {
-      name,
-      nameKo,
-      nameEn,
-      nameJp,
-      description,
-      descriptionKo,
-      descriptionEn,
-      descriptionJp,
-      image,
-      slug,
-    } = newPackage;
+    const { name, nameKo, nameEn, nameJp, image, slug } = newPackage;
 
     try {
       const checkPackage = await Package.findOne({
@@ -34,10 +23,6 @@ const createPackage = (newPackage) => {
         nameKo,
         nameEn,
         nameJp,
-        description,
-        descriptionKo,
-        descriptionEn,
-        descriptionJp,
         image,
         slug,
       });
@@ -250,10 +235,6 @@ const getAllPackage = (params) => {
         nameKo: 1,
         nameEn: 1,
         nameJp: 1,
-        description: 1,
-        descriptionKo: 1,
-        descriptionEn: 1,
-        descriptionJp: 1,
         image: 1,
         slug: 1,
         services: 1,

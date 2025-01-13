@@ -32,22 +32,6 @@ const packageSchema = new Schema(
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-      required: true,
-    },
-    descriptionKo: {
-      type: String,
-      required: true,
-    },
-    descriptionJp: {
-      type: String,
-      required: true,
-    },
-    descriptionEn: {
-      type: String,
-      required: true,
-    },
     booking: {
       type: Number,
       default: 0,
