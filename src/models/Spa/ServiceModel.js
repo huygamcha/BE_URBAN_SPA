@@ -3,26 +3,26 @@ const mongoose = require("mongoose");
 // Schema cho option services
 const optionServiceSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    titleKo: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    titleJp: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    titleEn: {
-      type: String,
-      unique: true,
-      required: true,
-    },
+    // title: {
+    //   type: String,
+    //   unique: true,
+    //   required: true,
+    // },
+    // titleKo: {
+    //   type: String,
+    //   unique: true,
+    //   required: true,
+    // },
+    // titleJp: {
+    //   type: String,
+    //   unique: true,
+    //   required: true,
+    // },
+    // titleEn: {
+    //   type: String,
+    //   unique: true,
+    //   required: true,
+    // },
 
     duration: {
       type: Number,
