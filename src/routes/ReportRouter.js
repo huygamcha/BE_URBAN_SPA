@@ -17,6 +17,18 @@ router.get(
 );
 
 router.get(
+  "/appointments",
+  AuthPermission(CONFIG_PERMISSIONS.APPOINTMENTS),
+  ReportController.getAllAppointments
+);
+
+router.get(
+  "/all-records/count",
+  AuthPermission(CONFIG_PERMISSIONS.DASHBOARD),
+  ReportController.getReportCountRecords
+);
+
+router.get(
   "/all-records/count",
   AuthPermission(CONFIG_PERMISSIONS.DASHBOARD),
   ReportController.getReportCountRecords

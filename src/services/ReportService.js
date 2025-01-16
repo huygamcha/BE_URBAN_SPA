@@ -6,6 +6,7 @@ const Review = require("@models/ReviewModel");
 const Comment = require("@models/CommentModel");
 const Package = require("../models/Spa/PackageModel");
 const Appointment = require("../models/Spa/AppointmentModel");
+const moment = require("moment/moment");
 
 const getReportCountProductType = () => {
   return new Promise(async (resolve, reject) => {
@@ -111,6 +112,64 @@ const getReportCountRecords = () => {
           review: reviewCount,
           revenue: totalRevenue?.[0]?.total,
           comment: commentCount,
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllAppointments = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { start, end } = data;
+
+      // Parse start and end dates
+      const startDate = new Date(`${start}T00:00:00`);
+      const endDate = new Date(`${end}T23:59:59`);
+
+      // Aggregate pipeline
+      const totalAppointments = await Appointment.aggregate([
+        {
+          $match: {
+            appointmentDate: {
+              $gte: startDate,
+              $lte: endDate,
+            },
+          },
+        },
+        {
+          $addFields: {
+            title: "$name", // Rename 'name' to 'title'
+            start: "$appointmentDate", // Rename 'appointmentDate' to 'start'
+            end: {
+              $add: ["$appointmentDate", 3600000], // Add 1 hour (3600000 ms) to 'appointmentDate'
+            },
+          },
+        },
+        {
+          $project: {
+            title: 1, // Exclude original 'name'
+            start: 1, // Exclude original 'appointmentDate'
+            end: 1,
+          },
+        },
+      ]);
+
+      // const formatAppointments = totalAppointments.map((item) => ({
+      //   ...item,
+      //   start: moment(item.start).toDate(),
+      //   end: moment(item.end).toDate(),
+      // }));
+
+      resolve({
+        status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
+        message: "Success",
+        typeError: "",
+        statusMessage: "Success",
+        data: {
+          totalAppointments: totalAppointments,
         },
       });
     } catch (e) {
@@ -326,4 +385,7 @@ module.exports = {
   getReportCountOrderStatus,
   getReportCountProductStatus,
   getReportCountRecordsSpa,
+
+  // show ra calendar
+  getAllAppointments,
 };

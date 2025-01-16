@@ -41,6 +41,29 @@ const getReportCountRecords = async (req, res) => {
   }
 };
 
+const getAllAppointments = async (req, res) => {
+  try {
+    const { start, end } = req.query;
+    const response = await ReportService.getAllAppointments({ start, end });
+    const { data, status, typeError, message, statusMessage } = response;
+    console.log("««««« data »»»»»", data);
+
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
 const getReportCountRecordsSpa = async (req, res) => {
   try {
     const response = await ReportService.getReportCountRecordsSpa();
@@ -148,5 +171,8 @@ module.exports = {
   getReportTotalRevenue,
   getReportCountOrderStatus,
   getReportCountProductStatus,
-  getReportCountRecordsSpa
+  getReportCountRecordsSpa,
+
+  // show ra calendar
+  getAllAppointments,
 };
