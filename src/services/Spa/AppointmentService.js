@@ -11,26 +11,14 @@ const createAppointment = (newAppointment) => {
       phoneNumber,
       language = "vi",
       quantity,
-      duration = 15,
     } = newAppointment;
     try {
-      const checkAppointment = await Appointment.findOne({
-        name: name,
-      });
-      if (checkAppointment !== null) {
-        resolve({
-          status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
-          message: "The name of appointment is existed",
-          typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
-          data: null,
-          statusMessage: "Error",
-        });
-      }
+      const formatAppointment = appointmentDate.replace(" ", "T") + "Z";
       const createAppointment = await Appointment.create({
         name,
         email,
         packageId,
-        appointmentDate,
+        appointmentDate: formatAppointment,
         phoneNumber,
         language,
         quantity,
