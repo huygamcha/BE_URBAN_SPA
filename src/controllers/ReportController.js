@@ -46,7 +46,6 @@ const getAllAppointments = async (req, res) => {
     const { start, end } = req.query;
     const response = await ReportService.getAllAppointments({ start, end });
     const { data, status, typeError, message, statusMessage } = response;
-    console.log("««««« data »»»»»", data);
 
     return res.status(status).json({
       typeError,

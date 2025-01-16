@@ -125,9 +125,13 @@ const getAllAppointments = (data) => {
     try {
       const { start, end } = data;
 
-      // Parse start and end dates
-      const startDate = new Date(`${start}T00:00:00`);
-      const endDate = new Date(`${end}T23:59:59`);
+      console.log("««««« start, end »»»»»", start, end);
+
+      // Giữ nguyên giá trị thời gian bằng chuỗi ISO
+      const startDate = new Date(`${start}T00:00:00.000Z`); // Thời gian UTC
+      const endDate = new Date(`${end}T23:59:59.999Z`); // Thời gian UTC
+
+      console.log("««««« startDate »»»»»", startDate, endDate);
 
       // Aggregate pipeline
       const totalAppointments = await Appointment.aggregate([
@@ -156,6 +160,8 @@ const getAllAppointments = (data) => {
           },
         },
       ]);
+
+      console.log("««««« totalAppointments »»»»»", totalAppointments);
 
       // const formatAppointments = totalAppointments.map((item) => ({
       //   ...item,
