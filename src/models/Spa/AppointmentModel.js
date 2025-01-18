@@ -1,5 +1,33 @@
 const mongoose = require("mongoose");
 
+const optionServiceSchema = new mongoose.Schema(
+  {
+    packageId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "packages",
+    },
+    serviceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "services",
+    },
+    optionId: {
+      type: String,
+    },
+    quantity: {
+      type: Number,
+      default: 1,
+    },
+    totalPrice: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+  }
+);
+
 const appointmentSchema = new mongoose.Schema(
   {
     name: {
@@ -48,6 +76,7 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       default: "10:00",
     },
+    allServices: [optionServiceSchema],
   },
   {
     timestamps: true,

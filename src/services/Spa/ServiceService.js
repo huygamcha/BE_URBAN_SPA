@@ -1,5 +1,6 @@
 const { CONFIG_MESSAGE_ERRORS } = require("@configs");
 const Service = require("@models/Spa/ServiceModel");
+const { default: mongoose } = require("mongoose");
 
 const createService = (newService) => {
   return new Promise(async (resolve, reject) => {
@@ -188,6 +189,7 @@ const getAllService = (params) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
+      const packageId = params?.packageId ?? "";
       const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
@@ -195,6 +197,10 @@ const getAllService = (params) => {
         const searchRegex = { $regex: search, $options: "i" };
 
         query.$or = [{ name: searchRegex }];
+      }
+
+      if (packageId) {
+        query["packageId"] = mongoose.Types.ObjectId(packageId);
       }
 
       const totalCount = await Service.countDocuments(query);
