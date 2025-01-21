@@ -20,6 +20,7 @@ const AppointmentRouter = require("./Spa/AppointmentRouter");
 const PackageRouter = require("./Spa/PackageRouter");
 const ServiceRouter = require("./Spa/ServiceRouter");
 const AboutRouter = require("./Spa/AboutRouter");
+const BannerRouter = require("./Spa/BannerRouter");
 
 routes.use("/auth", AuthRouter);
 routes.use("/users", UserRouter);
@@ -40,5 +41,6 @@ routes.use("/appointments", AppointmentRouter);
 routes.use("/packages", PackageRouter);
 routes.use("/services", ServiceRouter);
 routes.use("/about-us", AboutRouter);
+routes.use("/banners", BannerRouter);
 
 module.exports = routes;

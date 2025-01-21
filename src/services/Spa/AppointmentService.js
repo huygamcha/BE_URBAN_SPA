@@ -11,17 +11,36 @@ const createAppointment = (newAppointment) => {
       phoneNumber,
       language = "vi",
       quantity,
+      allServices,
+      duration,
     } = newAppointment;
     try {
+      let finalAllServices = [];
+      if (!allServices) {
+        finalAllServices.push({
+          packageId: packageId,
+          quantity: quantity,
+          totalPrice: 0,
+        });
+      }
+
+      let finalPackageId;
+      if (!packageId) {
+        finalPackageId = allServices[0].packageId;
+      }
+
+      // chuyển đổi ngày giờ khách đến đến lưu vào data
       const formatAppointment = appointmentDate.replace(" ", "T") + "Z";
       const createAppointment = await Appointment.create({
         name,
         email,
-        packageId,
+        packageId: packageId || finalPackageId,
         appointmentDate: formatAppointment,
         phoneNumber,
         language,
         quantity,
+        duration,
+        allServices: allServices ? allServices : finalAllServices,
       });
       if (createAppointment) {
         resolve({

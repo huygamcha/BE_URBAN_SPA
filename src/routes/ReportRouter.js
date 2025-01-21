@@ -16,6 +16,7 @@ router.get(
   ReportController.getReportCountUser
 );
 
+// lịch hẹn
 router.get(
   "/appointments",
   AuthPermission(CONFIG_PERMISSIONS.APPOINTMENTS),
@@ -40,6 +41,7 @@ router.get(
   ReportController.getReportCountRecordsSpa
 );
 
+// tổng doanh thu
 router.get(
   "/revenue-total",
   AuthPermission(CONFIG_PERMISSIONS.DASHBOARD),

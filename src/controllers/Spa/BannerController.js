@@ -1,18 +1,10 @@
-const { CONFIG_MESSAGE_ERRORS } = require("@configs");
-const { validateRequiredInput } = require("@utils");
-const AppointmentService = require("../../services/Spa/AppointmentService");
+const { CONFIG_MESSAGE_ERRORS } = require("../../configs");
+const { validateRequiredInput } = require("../../utils");
+const BannerService = require("../../services/Spa/BannerService");
 
-const createAppointment = async (req, res) => {
+const createBanner = async (req, res) => {
   try {
-    const requiredFields = validateRequiredInput(req.body, [
-      "name",
-      "email",
-      "appointmentDate",
-      "phoneNumber",
-      "quantity",
-      "duration",
-    ]);
-
+    const requiredFields = validateRequiredInput(req.body, ["links"]);
     if (requiredFields?.length) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
         status: "Error",
@@ -21,8 +13,120 @@ const createAppointment = async (req, res) => {
         data: null,
       });
     }
+    const response = await BannerService.createBanner(req.body);
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    // console.log("««««« e »»»»»", e);
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
 
-    const response = await AppointmentService.createAppointment(req.body);
+const updateBanner = async (req, res) => {
+  try {
+    const bannerId = req.params.id;
+    if (!bannerId) {
+      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
+        status: "Error",
+        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+        message: `The field bannerId is required`,
+      });
+    }
+    const response = await BannerService.updateBanner(bannerId, req.body);
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
+const getDetailsBanner = async (req, res) => {
+  try {
+    const bannerId = req.params.id;
+    if (!bannerId) {
+      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
+        status: "Error",
+        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+        message: `The field bannerId is required`,
+      });
+    }
+    const response = await BannerService.getDetailsBanner(bannerId);
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
+const deleteBanner = async (req, res) => {
+  try {
+    const bannerId = req.params.id;
+    if (!bannerId) {
+      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
+        status: "Error",
+        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+        message: `The field bannerId is required`,
+      });
+    }
+    const response = await BannerService.deleteBanner(bannerId);
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
+const deleteMany = async (req, res) => {
+  try {
+    const ids = req.body.bannerIds;
+    if (!ids || !ids.length) {
+      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
+        status: "Error",
+        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+        message: `The field bannerIds is required`,
+      });
+    }
+    const response = await BannerService.deleteManyBanners(ids);
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
       typeError,
@@ -32,7 +136,7 @@ const createAppointment = async (req, res) => {
     });
   } catch (e) {
     console.log("««««« e »»»»»", e);
-    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+    return res.status(200).json({
       message: "Internal Server Error",
       data: null,
       status: "Error",
@@ -41,162 +145,10 @@ const createAppointment = async (req, res) => {
   }
 };
 
-const updateAppointment = async (req, res) => {
-  try {
-    const appointmentId = req.params.id;
-    if (!appointmentId) {
-      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
-        status: "Error",
-        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
-        message: `The field appointmentId is required`,
-      });
-    }
-
-    const response = await AppointmentService.updateAppointment(
-      appointmentId,
-      req.body
-    );
-    const { data, status, typeError, message, statusMessage } = response;
-    return res.status(status).json({
-      typeError,
-      data,
-      message,
-      status: statusMessage,
-    });
-  } catch (e) {
-    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
-      message: "Internal Server Error",
-      data: null,
-      status: "Error",
-      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
-    });
-  }
-};
-
-const updateStatusAppointment = async (req, res) => {
-  try {
-    const orderId = req.params.orderId;
-    if (!orderId) {
-      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
-        status: "Error",
-        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
-        message: `The field orderId is required`,
-      });
-    }
-    const response = await AppointmentService.updateStatusAppointment(
-      orderId,
-      req.body
-    );
-    const { data, status, typeError, message, statusMessage } = response;
-    return res.status(status).json({
-      typeError,
-      data,
-      message,
-      status: statusMessage,
-    });
-  } catch (e) {
-    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
-      message: "Internal Server Error",
-      data: null,
-      status: "Error",
-      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
-    });
-  }
-};
-
-const getAppointmentDetails = async (req, res) => {
-  try {
-    const appointmentId = req.params.id;
-    if (!appointmentId) {
-      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
-        status: "Error",
-        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
-        message: `The field appointmentId is required`,
-      });
-    }
-
-    const response = await AppointmentService.getDetailsAppointment(
-      appointmentId
-    );
-    const { data, status, typeError, message, statusMessage } = response;
-    return res.status(status).json({
-      typeError,
-      data,
-      message,
-      status: statusMessage,
-    });
-  } catch (e) {
-    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
-      message: "Internal Server Error",
-      data: null,
-      status: "Error",
-      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
-    });
-  }
-};
-
-const deleteAppointment = async (req, res) => {
-  try {
-    const appointmentId = req.params.id;
-    if (!appointmentId) {
-      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
-        status: "Error",
-        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
-        message: `The field appointmentId is required`,
-      });
-    }
-
-    const response = await AppointmentService.deleteAppointment(appointmentId);
-    const { data, status, typeError, message, statusMessage } = response;
-    return res.status(status).json({
-      typeError,
-      data,
-      message,
-      status: statusMessage,
-    });
-  } catch (e) {
-    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
-      message: "Internal Server Error",
-      data: null,
-      status: "Error",
-      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
-    });
-  }
-};
-
-const deleteManyAppointments = async (req, res) => {
-  try {
-    const ids = req.body.appointmentIds;
-    if (!ids || !ids.length) {
-      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
-        status: "Error",
-        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
-        message: `The field appointmentIds is required`,
-      });
-    }
-
-    const response = await AppointmentService.deleteManyAppointments(ids);
-    const { data, status, typeError, message, statusMessage } = response;
-    return res.status(status).json({
-      typeError,
-      data,
-      message,
-      status: statusMessage,
-    });
-  } catch (e) {
-    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
-      message: "Internal Server Error",
-      data: e,
-      status: "Error",
-      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
-    });
-  }
-};
-
-const getAllAppointments = async (req, res) => {
+const getAllBanner = async (req, res) => {
   try {
     const params = req.query;
-    const response = await AppointmentService.getAllAppointments(params);
+    const response = await BannerService.getAllBanner(params);
     const { data, status, typeError, message, statusMessage } = response;
     return res.status(status).json({
       typeError,
@@ -205,7 +157,6 @@ const getAllAppointments = async (req, res) => {
       status: statusMessage,
     });
   } catch (e) {
-    console.log(e);
     return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
       message: "Internal Server Error",
       data: null,
@@ -216,11 +167,10 @@ const getAllAppointments = async (req, res) => {
 };
 
 module.exports = {
-  createAppointment,
-  updateAppointment,
-  updateStatusAppointment,
-  getAppointmentDetails,
-  deleteAppointment,
-  getAllAppointments,
-  deleteManyAppointments,
+  createBanner,
+  updateBanner,
+  getDetailsBanner,
+  deleteBanner,
+  getAllBanner,
+  deleteMany,
 };

@@ -93,6 +93,11 @@ const getReportCountRecords = () => {
 
       const totalRevenue = await Order.aggregate([
         {
+          $match: {
+            status: "Completed", // Lọc các đơn hàng có trạng thái Completed
+          },
+        },
+        {
           $group: {
             _id: null,
             total: { $sum: "$totalPrice" },
@@ -125,16 +130,20 @@ const getAllAppointments = (data) => {
     try {
       const { start, end } = data;
 
-      console.log("««««« start, end »»»»»", start, end);
-
       // Giữ nguyên giá trị thời gian bằng chuỗi ISO
       const startDate = new Date(`${start}T00:00:00.000Z`); // Thời gian UTC
       const endDate = new Date(`${end}T23:59:59.999Z`); // Thời gian UTC
 
-      console.log("««««« startDate »»»»»", startDate, endDate);
-
       // Aggregate pipeline
       const totalAppointments = await Appointment.aggregate([
+        {
+          $lookup: {
+            from: "packages",
+            localField: "packageId",
+            foreignField: "_id",
+            as: "package",
+          },
+        },
         {
           $match: {
             appointmentDate: {
@@ -145,10 +154,18 @@ const getAllAppointments = (data) => {
         },
         {
           $addFields: {
-            title: "$name", // Rename 'name' to 'title'
+            // title: "$name", // Rename 'name' to 'title'
+            // namePackage: "$package.name",
             start: "$appointmentDate", // Rename 'appointmentDate' to 'start'
             end: {
               $add: ["$appointmentDate", 3600000], // Add 1 hour (3600000 ms) to 'appointmentDate'
+            },
+            title: {
+              $concat: [
+                { $toString: "$name" }, // Chuyển 'appointmentDate' thành chuỗi
+                " - ",
+                { $arrayElemAt: ["$package.name", 0] }, // Lấy giá trị đầu tiên từ 'package.name'
+              ],
             },
           },
         },
@@ -157,11 +174,10 @@ const getAllAppointments = (data) => {
             title: 1, // Exclude original 'name'
             start: 1, // Exclude original 'appointmentDate'
             end: 1,
+            namePackage: 1,
           },
         },
       ]);
-
-      console.log("««««« totalAppointments »»»»»", totalAppointments);
 
       // const formatAppointments = totalAppointments.map((item) => ({
       //   ...item,
@@ -200,6 +216,11 @@ const getReportCountRecordsSpa = () => {
       // ]);
       const totalRevenue = await Appointment.aggregate([
         {
+          $match: {
+            status: "Completed", // Lọc các đơn hàng có trạng thái Completed
+          },
+        },
+        {
           $group: {
             _id: null,
             total: { $sum: "$totalPrice" },
@@ -214,7 +235,7 @@ const getReportCountRecordsSpa = () => {
         statusMessage: "Success",
         data: {
           user: userCount,
-          revenue: totalRevenue?.[0]?.total,
+          revenue: totalRevenue?.[0]?.total ?? 0,
           package: packageCount,
           appointment: appointmentCount,
         },
@@ -279,10 +300,15 @@ const getReportTotalRevenue = () => {
         //   },
         // },
         {
+          $match: {
+            status: "Completed",
+          },
+        },
+        {
           $group: {
             _id: {
-              month: { $month: "$createdAt" },
-              year: { $year: "$createdAt" },
+              month: { $month: "$appointmentDate" },
+              year: { $year: "$appointmentDate" },
             },
             total: { $sum: "$totalPrice" },
           },
