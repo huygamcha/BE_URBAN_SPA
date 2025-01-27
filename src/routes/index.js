@@ -22,6 +22,9 @@ const ServiceRouter = require("./Spa/ServiceRouter");
 const AboutRouter = require("./Spa/AboutRouter");
 const BannerRouter = require("./Spa/BannerRouter");
 
+// upload
+const UploadImageRouter = require("./Spa/UploadImageRouter");
+
 routes.use("/auth", AuthRouter);
 routes.use("/users", UserRouter);
 routes.use("/products", ProductRouter);
@@ -42,5 +45,8 @@ routes.use("/packages", PackageRouter);
 routes.use("/services", ServiceRouter);
 routes.use("/about-us", AboutRouter);
 routes.use("/banners", BannerRouter);
+
+// upload image
+routes.use("/upload-image", UploadImageRouter);
 
 module.exports = routes;
