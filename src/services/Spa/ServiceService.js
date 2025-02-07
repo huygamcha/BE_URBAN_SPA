@@ -256,7 +256,7 @@ const getAllService = (params) => {
         .limit(limit)
         .populate({
           path: "packageId",
-          select: "name",
+          select: "name nameKo nameJp nameEn",
           as: "package",
         })
         .sort(sortOptions)
