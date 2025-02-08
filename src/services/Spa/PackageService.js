@@ -200,6 +200,7 @@ const getAllPackage = (params) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
+      const showName = params?.showName ?? false;
       const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
@@ -255,7 +256,17 @@ const getAllPackage = (params) => {
               as: "services",
             },
           },
-          { $project: fieldsToSelect },
+          {
+            // ở phần đặt lịch chỉ lấy trường name
+            $project: showName
+              ? {
+                  name: 1,
+                  nameKo: 1,
+                  nameEn: 1,
+                  nameJp: 1,
+                }
+              : fieldsToSelect,
+          },
         ]);
 
         resolve({
