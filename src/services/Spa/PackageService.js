@@ -264,6 +264,7 @@ const getAllPackage = (params) => {
                   nameKo: 1,
                   nameEn: 1,
                   nameJp: 1,
+                  slug: 1,
                 }
               : fieldsToSelect,
           },
