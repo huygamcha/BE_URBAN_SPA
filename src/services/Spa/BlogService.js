@@ -1,53 +1,36 @@
-const { CONFIG_MESSAGE_ERRORS } = require("@configs");
-const Service = require("@models/Spa/ServiceModel");
-const { default: mongoose } = require("mongoose");
+const { CONFIG_MESSAGE_ERRORS } = require("../../configs");
+const Blog = require("../../models/Spa/BlogModel");
 
-const createService = (newService) => {
+const createBlog = (newBlog) => {
   return new Promise(async (resolve, reject) => {
     const {
       name,
-      nameKo,
-      nameJp,
       nameEn,
-      packageId,
-      options,
+      nameJp,
+      nameKo,
       description,
-      descriptionKo,
-      descriptionJp,
       descriptionEn,
-    } = newService;
-
+      descriptionJp,
+      descriptionKo,
+    } = newBlog;
     try {
-      const checkService = await Service.findOne({
-        name: name,
-      });
-      if (checkService !== null) {
-        resolve({
-          status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
-          message: "The name of service is existed",
-          typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
-          data: null,
-          statusMessage: "Error",
-        });
-      }
-      const createService = await Service.create({
+      const data = await Blog.create({
         name,
-        nameKo,
-        nameJp,
         nameEn,
-        packageId,
-        options,
+        nameJp,
+        nameKo,
         description,
-        descriptionKo,
-        descriptionJp,
         descriptionEn,
+        descriptionJp,
+        descriptionKo,
       });
-      if (createService) {
+
+      if (createBlog) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-          message: "Created service success",
+          message: "Created blog success",
           typeError: "",
-          data: createService,
+          data: data,
           statusMessage: "Success",
         });
       }
@@ -57,17 +40,16 @@ const createService = (newService) => {
   });
 };
 
-const updateService = (id, data) => {
+const updateBlog = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkService = await Service.findOne({
+      const checkBlog = await Blog.findOne({
         _id: id,
       });
-
-      if (!checkService) {
+      if (!checkBlog) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "The service is not existed",
+          message: "The blog is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
@@ -75,32 +57,19 @@ const updateService = (id, data) => {
         return;
       }
 
-      if (data.name && data.name !== checkService.name) {
-        const existedName = await Service.findOne({
-          name: data.name,
-          _id: { $ne: id },
-        });
-
-        if (existedName !== null) {
-          resolve({
-            status: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.status,
-            message: "The name of service is existed",
-            typeError: CONFIG_MESSAGE_ERRORS.ALREADY_EXIST.type,
-            data: null,
-            statusMessage: "Error",
-          });
-          return;
-        }
+      // tạo thêm trường vưa được cập nhật vào (language  )
+      const updateBlog = { ...checkBlog.toObject() };
+      for (const key in data) {
+        updateBlog[key] = data[key];
       }
-
-      const updatedService = await Service.findByIdAndUpdate(id, data, {
+      const result = await Blog.findByIdAndUpdate(id, updateBlog, {
         new: true,
       });
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Updated service type success",
+        message: "Updated blog type success",
         typeError: "",
-        data: updatedService,
+        data: result,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -109,28 +78,28 @@ const updateService = (id, data) => {
   });
 };
 
-const deleteService = (id) => {
+const deleteBlog = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkService = await Service.findOne({
+      const checkBlog = await Blog.findOne({
         _id: id,
       });
-      if (checkService === null) {
+      if (checkBlog === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "The service name is not existed",
+          message: "The blog name is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
         });
       }
 
-      await Service.findByIdAndDelete(id);
+      await Blog.findByIdAndDelete(id);
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Deleted service success",
+        message: "Deleted blog success",
         typeError: "",
-        data: checkService,
+        data: checkBlog,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -139,13 +108,13 @@ const deleteService = (id) => {
   });
 };
 
-const deleteManyServices = (ids) => {
+const deleteManyBlogs = (ids) => {
   return new Promise(async (resolve, reject) => {
     try {
-      await Service.deleteMany({ _id: ids });
+      await Blog.deleteMany({ _id: ids });
       resolve({
         status: CONFIG_MESSAGE_ERRORS.ACTION_SUCCESS.status,
-        message: "Delete services success",
+        message: "Delete blogs success",
         typeError: "",
         data: null,
         statusMessage: "Success",
@@ -156,16 +125,16 @@ const deleteManyServices = (ids) => {
   });
 };
 
-const getDetailService = (id) => {
+const getDetailsBlog = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkService = await Service.findOne({
+      const checkBlog = await Blog.findOne({
         _id: id,
       });
-      if (checkService === null) {
+      if (checkBlog === null) {
         resolve({
           status: CONFIG_MESSAGE_ERRORS.INVALID.status,
-          message: "The service is not existed",
+          message: "The blog is not existed",
           typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
           data: null,
           statusMessage: "Error",
@@ -175,7 +144,7 @@ const getDetailService = (id) => {
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
         message: "Success",
         typeError: "",
-        data: checkService,
+        data: checkBlog,
         statusMessage: "Success",
       });
     } catch (e) {
@@ -184,12 +153,11 @@ const getDetailService = (id) => {
   });
 };
 
-const getAllService = (params) => {
+const getAllBlog = (params) => {
   return new Promise(async (resolve, reject) => {
     try {
       const limit = params?.limit ? +params?.limit : 10;
       const search = params?.search ?? "";
-      const packageId = params?.packageId ?? "";
       const page = params?.page ? +params.page : 1;
       const order = params?.order ?? "createdAt desc";
       const query = {};
@@ -199,11 +167,7 @@ const getAllService = (params) => {
         query.$or = [{ name: searchRegex }];
       }
 
-      if (packageId) {
-        query["packageId"] = mongoose.Types.ObjectId(packageId);
-      }
-
-      const totalCount = await Service.countDocuments(query);
+      const totalCount = await Blog.countDocuments(query);
 
       const totalPage = Math.ceil(totalCount / limit);
 
@@ -221,20 +185,16 @@ const getAllService = (params) => {
 
       const fieldsToSelect = {
         name: 1,
-        nameKo: 1,
-        nameJp: 1,
-        nameKr: 1,
         nameEn: 1,
-        packageId: 1,
-        options: 1,
+        nameJp: 1,
+        nameKo: 1,
         description: 1,
-        descriptionKo: 1,
-        descriptionJp: 1,
         descriptionEn: 1,
+        descriptionJp: 1,
+        descriptionKo: 1,
       };
-
       if (page === -1 && limit === -1) {
-        const allService = await Service.find(query)
+        const allBlog = await Blog.find(query)
           .sort(sortOptions)
           .select(fieldsToSelect);
         resolve({
@@ -243,7 +203,7 @@ const getAllService = (params) => {
           typeError: "",
           statusMessage: "Success",
           data: {
-            services: allService,
+            blogs: allBlog,
             totalPage: 1,
             totalCount: totalCount,
           },
@@ -251,14 +211,9 @@ const getAllService = (params) => {
         return;
       }
 
-      const allService = await Service.find(query)
+      const allBlog = await Blog.find(query)
         .skip(startIndex)
         .limit(limit)
-        .populate({
-          path: "packageId",
-          select: "name nameKo nameJp nameEn image",
-          as: "package",
-        })
         .sort(sortOptions)
         .select(fieldsToSelect);
       resolve({
@@ -267,7 +222,7 @@ const getAllService = (params) => {
         typeError: "",
         statusMessage: "Success",
         data: {
-          services: allService,
+          blogs: allBlog,
           totalPage: totalPage,
           totalCount: totalCount,
         },
@@ -279,10 +234,10 @@ const getAllService = (params) => {
 };
 
 module.exports = {
-  createService,
-  updateService,
-  getDetailService,
-  deleteService,
-  getAllService,
-  deleteManyServices,
+  createBlog,
+  updateBlog,
+  getDetailsBlog,
+  deleteBlog,
+  getAllBlog,
+  deleteManyBlogs,
 };
