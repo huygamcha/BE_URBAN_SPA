@@ -18,6 +18,8 @@ router.put(
 
 router.get("/:id", BlogController.getDetailsBlog);
 
+router.get("/slug/:id", BlogController.getBlogBySlug);
+
 router.get("/", BlogController.getAllBlog);
 
 router.delete(

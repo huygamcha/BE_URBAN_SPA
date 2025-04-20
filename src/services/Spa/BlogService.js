@@ -3,27 +3,24 @@ const Blog = require("../../models/Spa/BlogModel");
 
 const createBlog = (newBlog) => {
   return new Promise(async (resolve, reject) => {
-    const {
-      name,
-      nameEn,
-      nameJp,
-      nameKo,
-      description,
-      descriptionEn,
-      descriptionJp,
-      descriptionKo,
-    } = newBlog;
     try {
-      const data = await Blog.create({
-        name,
-        nameEn,
-        nameJp,
-        nameKo,
-        description,
-        descriptionEn,
-        descriptionJp,
-        descriptionKo,
+      const { name, nameEn, nameJp, nameKo } = newBlog;
+
+      // Check tồn tại bất kỳ bản ghi trùng nào
+      const existed = await Blog.findOne({
+        $or: [{ name }, { nameEn }, { nameJp }, { nameKo }],
       });
+
+      if (existed) {
+        return resolve({
+          status: CONFIG_MESSAGE_ERRORS.INVALID.status,
+          message: "The field must be unique",
+          typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+          data: null,
+          statusMessage: "Error",
+        });
+      }
+      const data = await Blog.create(newBlog);
 
       if (createBlog) {
         resolve({
@@ -153,6 +150,34 @@ const getDetailsBlog = (id) => {
   });
 };
 
+const getBlogBySlug = (slug) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkBlog = await Blog.findOne({
+        slug,
+      });
+      if (checkBlog === null) {
+        resolve({
+          status: CONFIG_MESSAGE_ERRORS.INVALID.status,
+          message: "The blog is not existed",
+          typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+          data: null,
+          statusMessage: "Error",
+        });
+      }
+      resolve({
+        status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
+        message: "Success",
+        typeError: "",
+        data: checkBlog,
+        statusMessage: "Success",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const getAllBlog = (params) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -164,7 +189,7 @@ const getAllBlog = (params) => {
       if (search) {
         const searchRegex = { $regex: search, $options: "i" };
 
-        query.$or = [{ name: searchRegex }];
+        query.$or = [{ name: searchRegex }, { slug: searchRegex }];
       }
 
       const totalCount = await Blog.countDocuments(query);
@@ -192,6 +217,9 @@ const getAllBlog = (params) => {
         descriptionEn: 1,
         descriptionJp: 1,
         descriptionKo: 1,
+        slug: 1,
+        thumbnail: 1,
+        createdAt: 1,
       };
       if (page === -1 && limit === -1) {
         const allBlog = await Blog.find(query)
@@ -216,6 +244,8 @@ const getAllBlog = (params) => {
         .limit(limit)
         .sort(sortOptions)
         .select(fieldsToSelect);
+
+      console.log("««««« allBlog »»»»»", allBlog);
       resolve({
         status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
         message: "Success",
@@ -240,4 +270,5 @@ module.exports = {
   deleteBlog,
   getAllBlog,
   deleteManyBlogs,
+  getBlogBySlug,
 };

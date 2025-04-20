@@ -27,7 +27,10 @@ const blogSchema = new Schema(
     descriptionJp: {
       type: String,
     },
-    tag: {
+    slug: {
+      type: String,
+    },
+    thumbnail: {
       type: String,
     },
   },

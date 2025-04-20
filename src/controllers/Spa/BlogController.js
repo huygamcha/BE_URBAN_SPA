@@ -13,6 +13,8 @@ const createBlog = async (req, res) => {
       "descriptionEn",
       "descriptionJp",
       "descriptionKo",
+      "slug",
+      "thumbnail",
     ]);
     if (requiredFields?.length) {
       return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
@@ -31,7 +33,6 @@ const createBlog = async (req, res) => {
       status: statusMessage,
     });
   } catch (e) {
-    console.log("««««« e »»»»»", e);
     return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
       message: "Internal Server Error",
       data: null,
@@ -97,6 +98,36 @@ const getDetailsBlog = async (req, res) => {
   }
 };
 
+const getBlogBySlug = async (req, res) => {
+  try {
+    const slug = req.params.id;
+    if (!slug) {
+      return res.status(CONFIG_MESSAGE_ERRORS.INVALID.status).json({
+        status: "Error",
+        typeError: CONFIG_MESSAGE_ERRORS.INVALID.type,
+        message: `The field blogId is required`,
+      });
+    }
+    const response = await BlogService.getBlogBySlug(slug);
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    console.log("««««« e »»»»»", e);
+
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
 const deleteBlog = async (req, res) => {
   try {
     const blogId = req.params.id;
@@ -144,7 +175,6 @@ const deleteMany = async (req, res) => {
       status: statusMessage,
     });
   } catch (e) {
-    console.log("««««« e »»»»»", e);
     return res.status(200).json({
       message: "Internal Server Error",
       data: null,
@@ -182,4 +212,5 @@ module.exports = {
   deleteBlog,
   getAllBlog,
   deleteMany,
+  getBlogBySlug,
 };
