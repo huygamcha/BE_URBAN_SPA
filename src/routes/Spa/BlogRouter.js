@@ -10,6 +10,8 @@ router.post(
   BlogController.createBlog
 );
 
+router.get("/random", BlogController.getRandomBlog);
+
 router.put(
   "/:id",
   AuthPermission(CONFIG_PERMISSIONS.SETTING.BLOG.UPDATE),

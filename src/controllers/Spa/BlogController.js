@@ -205,6 +205,27 @@ const getAllBlog = async (req, res) => {
   }
 };
 
+const getRandomBlog = async (req, res) => {
+  try {
+    const params = req.query;
+    const response = await BlogService.getRandomBlog(params);
+    const { data, status, typeError, message, statusMessage } = response;
+    return res.status(status).json({
+      typeError,
+      data,
+      message,
+      status: statusMessage,
+    });
+  } catch (e) {
+    return res.status(CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.status).json({
+      message: "Internal Server Error",
+      data: null,
+      status: "Error",
+      typeError: CONFIG_MESSAGE_ERRORS.INTERNAL_ERROR.type,
+    });
+  }
+};
+
 module.exports = {
   createBlog,
   updateBlog,
@@ -213,4 +234,5 @@ module.exports = {
   getAllBlog,
   deleteMany,
   getBlogBySlug,
+  getRandomBlog
 };

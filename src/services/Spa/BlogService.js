@@ -263,6 +263,31 @@ const getAllBlog = (params) => {
   });
 };
 
+const getRandomBlog = (params) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const number = +params?.number || 5;
+      const currentSlug = params?.currentSlug || "";
+      const data = await Blog.aggregate([
+        { $match: { slug: { $ne: currentSlug } } },
+        {
+          $sample: { size: number },
+        },
+      ]);
+      resolve({
+        status: CONFIG_MESSAGE_ERRORS.GET_SUCCESS.status,
+        message: "Success",
+        typeError: "",
+        statusMessage: "Success",
+        data: data,
+      });
+    } catch (error) {
+      console.log("««««« error »»»»»", error);
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   createBlog,
   updateBlog,
@@ -271,4 +296,5 @@ module.exports = {
   getAllBlog,
   deleteManyBlogs,
   getBlogBySlug,
+  getRandomBlog,
 };
