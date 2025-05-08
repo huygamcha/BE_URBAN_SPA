@@ -3,32 +3,15 @@ const mongoose = require("mongoose");
 // Schema cho option services
 const optionServiceSchema = new mongoose.Schema(
   {
-    // title: {
-    //   type: String,
-    //   unique: true,
-    //   required: true,
-    // },
-    // titleKo: {
-    //   type: String,
-    //   unique: true,
-    //   required: true,
-    // },
-    // titleJp: {
-    //   type: String,
-    //   unique: true,
-    //   required: true,
-    // },
-    // titleEn: {
-    //   type: String,
-    //   unique: true,
-    //   required: true,
-    // },
-
     duration: {
       type: Number,
       required: true,
     },
     price: {
+      type: Number,
+      required: true,
+    },
+    discountPrice: {
       type: Number,
       required: true,
     },
@@ -60,22 +43,18 @@ const serviceSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      unique: true,
       required: true,
     },
     descriptionKo: {
       type: String,
-      unique: true,
       required: true,
     },
     descriptionJp: {
       type: String,
-      unique: true,
       required: true,
     },
     descriptionEn: {
       type: String,
-      unique: true,
       required: true,
     },
     packageId: {
