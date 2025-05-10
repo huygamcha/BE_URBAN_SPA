@@ -5,7 +5,7 @@ const optionServiceSchema = new mongoose.Schema(
   {
     duration: {
       type: Number,
-      required: true,
+      // required: true,
     },
     price: {
       type: Number,
