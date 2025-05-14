@@ -1,0 +1,84 @@
+# .github/workflows/deploy.yml
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check Node.js version
+        run: node -v
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.FE_URBAN_SPA }}
+
+      - name: Deploy to DigitalOcean
+        env:
+          HOST: 45.76.188.215
+          USERNAME: root
+          TARGET_DIR: /root/code/BE_URBAN_SPA
+          APP_NAME: BE_URBAN_SPA_4002 #should match the name of the server block
+          PORT: 4002
+          ACCESS_TOKEN_EXPIRE: ${{ secrets.ACCESS_TOKEN_EXPIRE }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          BE_URBAN_SPA: ${{ secrets.BE_URBAN_SPA }}
+          MAIL_ACCOUNT: ${{ secrets.MAIL_ACCOUNT }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MONGO_DB: ${{ secrets.MONGO_DB }}
+          PORT: ${{ secrets.PORT }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_TOKEN: ${{ secrets.R2_TOKEN }}
+          R2_URL: ${{ secrets.R2_URL }}
+          REFRESH_TOKEN_EXPIRE: ${{ secrets.REFRESH_TOKEN_EXPIRE }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+          TIME_EXPIRE_PASSWORD: ${{ secrets.TIME_EXPIRE_PASSWORD }}
+      run: |
+          ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
+            export PATH=/usr/bin:$PATH #'which pm2' command on terminal will give the right path
+            cd $TARGET_DIR
+            git pull origin ${GITHUB_REF#refs/heads/}
+            # Tạo file .env từ các secrets
+            echo "ACCESS_TOKEN_EXPIRE=${ACCESS_TOKEN_EXPIRE}" >> .env
+            echo "ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}" >> .env
+            echo "BE_URBAN_SPA=${BE_URBAN_SPA}" >> .env
+            echo "MAIL_ACCOUNT=${MAIL_ACCOUNT}" >> .env
+            echo "MAIL_PASSWORD=${MAIL_PASSWORD}" >> .env
+            echo "MONGO_DB=${MONGO_DB}" >> .env
+            echo "PORT=${PORT}" >> .env
+            echo "R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}" >> .env
+            echo "R2_ENDPOINT=${R2_ENDPOINT}" >> .env
+            echo "R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}" >> .env
+            echo "R2_TOKEN=${R2_TOKEN}" >> .env
+            echo "R2_URL=${R2_URL}" >> .env
+            echo "REFRESH_TOKEN_EXPIRE=${REFRESH_TOKEN_EXPIRE}" >> .env
+            echo "REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}" >> .env
+            echo "TIME_EXPIRE_PASSWORD=${TIME_EXPIRE_PASSWORD}" >> .env
+            git pull 
+            npm install
+
+            if pm2 list | grep -q $APP_NAME; then
+              echo "Restarting application: $APP_NAME"
+              pm2 restart $APP_NAME
+            else
+              echo "Starting application: $APP_NAME"
+              pm2 start npm --name $APP_NAME -- start -- --port=$PORT
+            fi            
+            pm2 save
+          EOF
+
