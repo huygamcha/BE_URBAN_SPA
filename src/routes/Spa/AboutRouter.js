@@ -10,6 +10,6 @@ router.put(
   AboutController.updateAbout
 );
 
-router.get("/:id", AboutController.getDetailAbout);
+// router.get("/:id", AboutController.getDetailAbout);
 
 module.exports = router;
