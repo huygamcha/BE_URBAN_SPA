@@ -39,6 +39,7 @@ jobs:
           MAIL_ACCOUNT: ${{ secrets.MAIL_ACCOUNT }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MONGO_DB: ${{ secrets.MONGO_DB }}
+          PORT: ${{ secrets.PORT }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -59,6 +60,7 @@ jobs:
             echo "MAIL_ACCOUNT=${MAIL_ACCOUNT}" >> .env
             echo "MAIL_PASSWORD=${MAIL_PASSWORD}" >> .env
             echo "MONGO_DB=${MONGO_DB}" >> .env
+            echo "PORT=${PORT}" >> .env
             echo "R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}" >> .env
             echo "R2_ENDPOINT=${R2_ENDPOINT}" >> .env
             echo "R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}" >> .env
