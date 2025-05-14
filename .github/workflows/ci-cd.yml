@@ -74,7 +74,7 @@ jobs:
               pm2 restart $APP_NAME
             else
               echo "Starting application: $APP_NAME"
-              pm2 start npm --name $APP_NAME -- start -- --port=$PORT
+              pm2 start src/index.js --name $APP_NAME -- --port=$PORT
             fi
             pm2 save
           EOF
